@@ -1,23 +1,22 @@
-/**
- * @fileoverview Transport onboarding step component.
- * Collects transport mode, fuel type, weekly distance, and flight data
- * using accessible radio cards, sliders, and number inputs.
- * @module components/Onboarding/TransportStep
- */
-
 import React from 'react';
 import { TransportMode, FuelType } from '../../types';
 import { useCarbonStore } from '../../store/carbonStore';
 import { sanitizeNumber } from '../../utils/sanitize';
 
-/** Transport mode options with emoji icons */
-const TRANSPORT_OPTIONS: readonly { value: TransportMode; label: string }[] = [
-  { value: TransportMode.Car, label: 'Car 🚗' },
-  { value: TransportMode.PublicTransit, label: 'Public Transit 🚌' },
-  { value: TransportMode.Bicycle, label: 'Bicycle 🚲' },
-  { value: TransportMode.Walking, label: 'Walking 🚶' },
-  { value: TransportMode.Motorcycle, label: 'Motorcycle 🏍️' },
-  { value: TransportMode.ElectricCar, label: 'Electric Car ⚡' },
+interface TransportOption {
+  readonly value: TransportMode;
+  readonly label: string;
+  readonly icon: string;
+}
+
+/** Transport mode options with icons */
+const TRANSPORT_OPTIONS: readonly TransportOption[] = [
+  { value: TransportMode.Car, label: 'Car', icon: '🚗' },
+  { value: TransportMode.PublicTransit, label: 'Public Transit', icon: '🚌' },
+  { value: TransportMode.Bicycle, label: 'Bicycle', icon: '🚲' },
+  { value: TransportMode.Walking, label: 'Walking', icon: '🚶' },
+  { value: TransportMode.Motorcycle, label: 'Motorcycle', icon: '🏍️' },
+  { value: TransportMode.ElectricCar, label: 'Electric Car', icon: '⚡' },
 ];
 
 /** Fuel type options */
@@ -49,53 +48,60 @@ export const TransportStep: React.FC = () => {
       <legend className="step-content__title">How do you get around?</legend>
 
       {/* Transport Mode */}
-      <div className="radio-card" role="radiogroup" aria-label="Transport mode">
-        {TRANSPORT_OPTIONS.map(({ value, label }) => (
-          <label
-            key={value}
-            className={`radio-card__option${
-              transport.primaryMode === value ? ' radio-card__option--selected' : ''
-            }`}
-          >
-            <input
-              type="radio"
-              name="transportMode"
-              value={value}
-              checked={transport.primaryMode === value}
-              onChange={() => setTransport({ primaryMode: value })}
-              aria-label={label}
-            />
-            <span className="radio-card__label">{label}</span>
-          </label>
-        ))}
+      <div className="radio-group" role="radiogroup" aria-label="Transport mode">
+        {TRANSPORT_OPTIONS.map(({ value, label, icon }) => {
+          const isSelected = transport.primaryMode === value;
+          return (
+            <label key={value} className={`radio-card${isSelected ? ' radio-card--selected' : ''}`}>
+              <input
+                type="radio"
+                name="transportMode"
+                value={value}
+                checked={isSelected}
+                onChange={() => setTransport({ primaryMode: value })}
+                aria-label={`${label} mode`}
+              />
+              <div className="radio-card__icon" aria-hidden="true">
+                {icon}
+              </div>
+              <span className="radio-card__label">{label}</span>
+            </label>
+          );
+        })}
       </div>
 
       {/* Fuel Type (conditional) */}
       {showFuel && (
-        <div className="radio-card" role="radiogroup" aria-label="Fuel type">
-          {FUEL_OPTIONS.map(({ value, label }) => (
-            <label
-              key={value}
-              className={`radio-card__option${
-                transport.fuelType === value ? ' radio-card__option--selected' : ''
-              }`}
-            >
-              <input
-                type="radio"
-                name="fuelType"
-                value={value}
-                checked={transport.fuelType === value}
-                onChange={() => setTransport({ fuelType: value })}
-                aria-label={label}
-              />
-              <span className="radio-card__label">{label}</span>
-            </label>
-          ))}
+        <div style={{ marginTop: 'var(--space-6)' }}>
+          <p className="slider-group__label" style={{ marginBottom: 'var(--space-3)' }}>
+            What fuel type does your vehicle use?
+          </p>
+          <div className="radio-group" role="radiogroup" aria-label="Fuel type">
+            {FUEL_OPTIONS.map(({ value, label }) => {
+              const isSelected = transport.fuelType === value;
+              return (
+                <label
+                  key={value}
+                  className={`radio-card${isSelected ? ' radio-card--selected' : ''}`}
+                >
+                  <input
+                    type="radio"
+                    name="fuelType"
+                    value={value}
+                    checked={isSelected}
+                    onChange={() => setTransport({ fuelType: value })}
+                    aria-label={`${label} fuel`}
+                  />
+                  <span className="radio-card__label">{label}</span>
+                </label>
+              );
+            })}
+          </div>
         </div>
       )}
 
       {/* Weekly Distance */}
-      <div className="slider-group">
+      <div className="slider-group" style={{ marginTop: 'var(--space-6)' }}>
         <label htmlFor="weeklyDistance" className="slider-group__label">
           Weekly distance: {transport.weeklyDistanceKm} km
         </label>

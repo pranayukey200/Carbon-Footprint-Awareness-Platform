@@ -1,9 +1,3 @@
-/**
- * @fileoverview Progress tracker page showing stats (total actions, CO₂ saved,
- * streak), a list of progress entries, and a "Log Action" button.
- * @module components/Progress/ProgressTracker
- */
-
 import { useMemo, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import { useCarbonStore } from '../../store/carbonStore';
@@ -11,38 +5,23 @@ import { formatCO2, formatNumber } from '../../utils/formatters';
 import { Card } from '../shared/Card';
 import { ProgressCard } from './ProgressCard';
 
-/**
- * Calculates a simple daily streak from chronologically-ordered entries.
- * A streak is consecutive calendar days with at least one logged action.
- */
 function calculateStreak(dates: readonly string[]): number {
   if (dates.length === 0) return 0;
-  let streak = 1;
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const latest = new Date(dates[0] ?? '');
-  latest.setHours(0, 0, 0, 0);
-  const diffToday = Math.floor((today.getTime() - latest.getTime()) / 86_400_000);
-  if (diffToday > 1) return 0;
-
-  for (let i = 1; i < dates.length; i++) {
-    const prev = new Date(dates[i - 1] ?? '');
-    const curr = new Date(dates[i] ?? '');
-    prev.setHours(0, 0, 0, 0);
-    curr.setHours(0, 0, 0, 0);
-    const gap = Math.floor((prev.getTime() - curr.getTime()) / 86_400_000);
-    if (gap <= 1) streak++;
-    else break;
+  let streak = 0;
+  const today = new Date().setHours(0, 0, 0, 0);
+  const uniqueDays = Array.from(new Set(dates.map((d) => new Date(d).setHours(0, 0, 0, 0)))).sort(
+    (a, b) => b - a,
+  );
+  if (uniqueDays[0] && (today - uniqueDays[0]) / 86400000 <= 1) {
+    streak = 1;
+    for (let i = 1; i < uniqueDays.length; i++) {
+      if ((uniqueDays[i - 1]! - uniqueDays[i]!) / 86400000 <= 1) streak++;
+      else break;
+    }
   }
   return streak;
 }
 
-/**
- * Full progress tracking page with summary stats, the "Log Action" button,
- * and a chronological list of completed action entries.
- * Shows an empty state when no progress has been logged.
- * @returns Rendered progress tracker
- */
 export function ProgressTracker(): ReactNode {
   const progressLog = useCarbonStore((s) => s.progressLog);
   const recommendations = useCarbonStore((s) => s.recommendations);
@@ -52,12 +31,10 @@ export function ProgressTracker(): ReactNode {
     () => progressLog.reduce((sum, e) => sum + e.kgCO2Saved, 0),
     [progressLog],
   );
-
   const streak = useMemo(
     () => calculateStreak(progressLog.map((e) => e.completedAt)),
     [progressLog],
   );
-
   const completedActions = useMemo(
     () => recommendations.filter((a) => a.isCompleted),
     [recommendations],
@@ -75,10 +52,74 @@ export function ProgressTracker(): ReactNode {
     });
   }, [completedActions, addProgressEntry]);
 
+  const heatmapDays = useMemo(() => {
+    const days = [];
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - 83);
+    const logged = new Map<string, number>();
+    progressLog.forEach((e) => {
+      const d = new Date(e.completedAt).toISOString().split('T')[0] || '';
+      logged.set(d, (logged.get(d) || 0) + 1);
+    });
+    for (let i = 0; i < 84; i++) {
+      const d = new Date(startDate);
+      d.setDate(startDate.getDate() + i);
+      const dStr = d.toISOString().split('T')[0] || '';
+      days.push({ date: d, count: logged.get(dStr) || 0 });
+    }
+    return days;
+  }, [progressLog]);
+
+  const milestones = useMemo(
+    () => [
+      {
+        id: '1',
+        title: 'First Step',
+        desc: 'Log 1st action',
+        icon: '🌿',
+        unlocked: progressLog.length >= 1,
+      },
+      {
+        id: '2',
+        title: 'Carbon Cutter',
+        desc: 'Save 100 kg CO₂',
+        icon: '📉',
+        unlocked: totalSaved >= 100,
+      },
+      { id: '3', title: 'Eco Routine', desc: '3-day streak', icon: '🔥', unlocked: streak >= 3 },
+      {
+        id: '4',
+        title: 'Champion',
+        desc: 'Log 5 actions',
+        icon: '🏆',
+        unlocked: progressLog.length >= 5,
+      },
+    ],
+    [progressLog.length, totalSaved, streak],
+  );
+
   return (
-    <div className="progress" aria-label="Progress tracker">
-      <header className="progress__header">
-        <h2 className="progress__title">Your Progress</h2>
+    <div
+      className="progress"
+      aria-label="Progress tracker"
+      style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}
+    >
+      <header
+        className="progress__header"
+        style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+      >
+        <h2 className="progress__title" style={{ margin: 0 }}>
+          Your Progress
+        </h2>
+        <button
+          type="button"
+          className="btn btn--primary"
+          onClick={handleLogAction}
+          disabled={completedActions.length === 0}
+          aria-label="Log a completed action to your progress"
+        >
+          Log Action
+        </button>
       </header>
 
       <div className="progress__stats" role="list" aria-label="Progress statistics">
@@ -96,15 +137,105 @@ export function ProgressTracker(): ReactNode {
         </Card>
       </div>
 
-      <button
-        type="button"
-        className="btn btn--primary btn--lg"
-        onClick={handleLogAction}
-        disabled={completedActions.length === 0}
-        aria-label="Log a completed action to your progress"
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+          gap: 'var(--space-4)',
+        }}
       >
-        Log Action
-      </button>
+        <Card aria-label="Logging activity heatmap" style={{ padding: 'var(--space-4)' }}>
+          <h3 style={{ margin: '0 0 var(--space-3) 0', fontSize: 'var(--font-size-base)' }}>
+            Activity Heatmap
+          </h3>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateRows: 'repeat(7, 10px)',
+              gridAutoFlow: 'column',
+              gap: '3px',
+              justifyContent: 'center',
+            }}
+          >
+            {heatmapDays.map((day, idx) => {
+              let color = 'var(--color-bg-tertiary)';
+              if (day.count > 0) {
+                color =
+                  day.count === 1
+                    ? 'rgba(29, 158, 117, 0.4)'
+                    : day.count === 2
+                      ? 'rgba(29, 158, 117, 0.7)'
+                      : 'var(--color-accent-primary)';
+              }
+              return (
+                <div
+                  key={idx}
+                  style={{
+                    width: '10px',
+                    height: '10px',
+                    backgroundColor: color,
+                    borderRadius: '2px',
+                  }}
+                  title={`${day.count} actions on ${day.date.toLocaleDateString()}`}
+                />
+              );
+            })}
+          </div>
+        </Card>
+
+        <Card aria-label="Milestones" style={{ padding: 'var(--space-4)' }}>
+          <h3 style={{ margin: '0 0 var(--space-3) 0', fontSize: 'var(--font-size-base)' }}>
+            Milestones
+          </h3>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+              gap: 'var(--space-2)',
+            }}
+          >
+            {milestones.map((m) => (
+              <div
+                key={m.id}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 'var(--space-2)',
+                  padding: 'var(--space-2)',
+                  borderRadius: 'var(--radius-md)',
+                  background: m.unlocked ? 'rgba(29, 158, 117, 0.1)' : 'var(--color-bg-tertiary)',
+                  border: m.unlocked
+                    ? '1px solid var(--color-accent-primary)'
+                    : '1px solid transparent',
+                  opacity: m.unlocked ? 1 : 0.4,
+                }}
+              >
+                <span style={{ fontSize: 'var(--font-size-xl)' }}>{m.icon}</span>
+                <div>
+                  <h4
+                    style={{
+                      margin: 0,
+                      fontSize: 'var(--font-size-xs)',
+                      fontWeight: 'var(--font-weight-bold)',
+                    }}
+                  >
+                    {m.title}
+                  </h4>
+                  <p
+                    style={{
+                      margin: 0,
+                      fontSize: 'var(--font-size-xs)',
+                      color: 'var(--color-text-secondary)',
+                    }}
+                  >
+                    {m.desc}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
 
       {progressLog.length === 0 ? (
         <div className="empty-state">

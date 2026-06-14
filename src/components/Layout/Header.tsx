@@ -10,7 +10,7 @@ import { useCallback } from 'react';
 /* ─── Types ─────────────────────────────────────────────────────────── */
 
 /** Views the header can navigate to */
-type View = 'dashboard' | 'actions' | 'progress';
+type View = 'dashboard' | 'actions' | 'progress' | 'comparison';
 
 /** Props for the {@link Header} component */
 interface HeaderProps {
@@ -31,6 +31,7 @@ const NAV_ITEMS: readonly NavItem[] = [
   { id: 'dashboard', label: 'Dashboard' },
   { id: 'actions', label: 'Actions' },
   { id: 'progress', label: 'Progress' },
+  { id: 'comparison', label: 'Comparison' },
 ] as const;
 
 /* ─── Component ─────────────────────────────────────────────────────── */

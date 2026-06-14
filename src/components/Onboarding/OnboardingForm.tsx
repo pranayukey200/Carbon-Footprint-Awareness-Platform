@@ -106,8 +106,33 @@ export const OnboardingForm: React.FC = () => {
   return (
     <div className="onboarding" role="form" aria-label="Carbon footprint onboarding">
       <header className="onboarding__header">
-        <h2>Calculate Your Carbon Footprint</h2>
+        <h2 className="onboarding__title">Calculate Your Carbon Footprint</h2>
         <StepIndicator currentStep={currentStep} />
+        <div
+          className="onboarding__progress-bar"
+          style={{
+            height: '4px',
+            background: 'var(--color-bg-tertiary)',
+            borderRadius: 'var(--radius-full)',
+            overflow: 'hidden',
+            marginTop: 'var(--space-4)',
+          }}
+          role="progressbar"
+          aria-valuenow={currentStep}
+          aria-valuemin={0}
+          aria-valuemax={4}
+          aria-label={`Onboarding progress: ${Math.round((currentStep / 4) * 100)}%`}
+        >
+          <div
+            style={{
+              height: '100%',
+              background:
+                'linear-gradient(90deg, var(--color-accent-primary), var(--color-accent-tertiary))',
+              width: `${(currentStep / 4) * 100}%`,
+              transition: 'width 0.3s ease',
+            }}
+          />
+        </div>
       </header>
 
       {/* Active step or review */}

@@ -10,12 +10,18 @@ import { DietType } from '../../types';
 import { useCarbonStore } from '../../store/carbonStore';
 import { sanitizeNumber } from '../../utils/sanitize';
 
+interface DietOption {
+  readonly value: DietType;
+  readonly label: string;
+  readonly icon: string;
+}
+
 /** Diet type options with emoji icons */
-const DIET_OPTIONS: readonly { value: DietType; label: string }[] = [
-  { value: DietType.MeatHeavy, label: 'Meat Heavy 🥩' },
-  { value: DietType.Average, label: 'Average 🍽️' },
-  { value: DietType.Vegetarian, label: 'Vegetarian 🥗' },
-  { value: DietType.Vegan, label: 'Vegan 🌱' },
+const DIET_OPTIONS: readonly DietOption[] = [
+  { value: DietType.MeatHeavy, label: 'Meat Heavy', icon: '🥩' },
+  { value: DietType.Average, label: 'Average', icon: '🍽️' },
+  { value: DietType.Vegetarian, label: 'Vegetarian', icon: '🥗' },
+  { value: DietType.Vegan, label: 'Vegan', icon: '🌱' },
 ];
 
 /**
@@ -34,25 +40,26 @@ export const DietStep: React.FC = () => {
       <legend className="step-content__title">What's your diet like?</legend>
 
       {/* Diet Type */}
-      <div className="radio-card" role="radiogroup" aria-label="Diet type">
-        {DIET_OPTIONS.map(({ value, label }) => (
-          <label
-            key={value}
-            className={`radio-card__option${
-              diet.dietType === value ? ' radio-card__option--selected' : ''
-            }`}
-          >
-            <input
-              type="radio"
-              name="dietType"
-              value={value}
-              checked={diet.dietType === value}
-              onChange={() => setDiet({ dietType: value })}
-              aria-label={label}
-            />
-            <span className="radio-card__label">{label}</span>
-          </label>
-        ))}
+      <div className="radio-group" role="radiogroup" aria-label="Diet type">
+        {DIET_OPTIONS.map(({ value, label, icon }) => {
+          const isSelected = diet.dietType === value;
+          return (
+            <label key={value} className={`radio-card${isSelected ? ' radio-card--selected' : ''}`}>
+              <input
+                type="radio"
+                name="dietType"
+                value={value}
+                checked={isSelected}
+                onChange={() => setDiet({ dietType: value })}
+                aria-label={`${label} diet`}
+              />
+              <div className="radio-card__icon" aria-hidden="true">
+                {icon}
+              </div>
+              <span className="radio-card__label">{label}</span>
+            </label>
+          );
+        })}
       </div>
 
       {/* Local Food Percentage */}

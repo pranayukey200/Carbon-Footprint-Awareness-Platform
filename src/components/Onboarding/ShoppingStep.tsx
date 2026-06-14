@@ -10,15 +10,18 @@ import type { ShoppingProfile } from '../../types';
 import { useCarbonStore } from '../../store/carbonStore';
 import { sanitizeNumber } from '../../utils/sanitize';
 
+interface FashionOption {
+  readonly value: ShoppingProfile['fastFashionFrequency'];
+  readonly label: string;
+  readonly icon: string;
+}
+
 /** Fast fashion frequency options */
-const FASHION_OPTIONS: readonly {
-  value: ShoppingProfile['fastFashionFrequency'];
-  label: string;
-}[] = [
-  { value: 'never', label: 'Never' },
-  { value: 'rarely', label: 'Rarely' },
-  { value: 'sometimes', label: 'Sometimes' },
-  { value: 'often', label: 'Often' },
+const FASHION_OPTIONS: readonly FashionOption[] = [
+  { value: 'never', label: 'Never', icon: '🌿' },
+  { value: 'rarely', label: 'Rarely', icon: '🛒' },
+  { value: 'sometimes', label: 'Sometimes', icon: '👕' },
+  { value: 'often', label: 'Often', icon: '🛍️' },
 ];
 
 /**
@@ -57,25 +60,34 @@ export const ShoppingStep: React.FC = () => {
       </div>
 
       {/* Fast Fashion Frequency */}
-      <div className="radio-card" role="radiogroup" aria-label="Fast fashion frequency">
-        {FASHION_OPTIONS.map(({ value, label }) => (
-          <label
-            key={value}
-            className={`radio-card__option${
-              shopping.fastFashionFrequency === value ? ' radio-card__option--selected' : ''
-            }`}
-          >
-            <input
-              type="radio"
-              name="fastFashion"
-              value={value}
-              checked={shopping.fastFashionFrequency === value}
-              onChange={() => setShopping({ fastFashionFrequency: value })}
-              aria-label={`Fast fashion: ${label}`}
-            />
-            <span className="radio-card__label">{label}</span>
-          </label>
-        ))}
+      <div style={{ marginTop: 'var(--space-6)', marginBottom: 'var(--space-6)' }}>
+        <p className="slider-group__label" style={{ marginBottom: 'var(--space-3)' }}>
+          Fast fashion frequency
+        </p>
+        <div className="radio-group" role="radiogroup" aria-label="Fast fashion frequency">
+          {FASHION_OPTIONS.map(({ value, label, icon }) => {
+            const isSelected = shopping.fastFashionFrequency === value;
+            return (
+              <label
+                key={value}
+                className={`radio-card${isSelected ? ' radio-card--selected' : ''}`}
+              >
+                <input
+                  type="radio"
+                  name="fastFashion"
+                  value={value}
+                  checked={isSelected}
+                  onChange={() => setShopping({ fastFashionFrequency: value })}
+                  aria-label={`Fast fashion: ${label}`}
+                />
+                <div className="radio-card__icon" aria-hidden="true">
+                  {icon}
+                </div>
+                <span className="radio-card__label">{label}</span>
+              </label>
+            );
+          })}
+        </div>
       </div>
 
       {/* Electronics per Year */}
