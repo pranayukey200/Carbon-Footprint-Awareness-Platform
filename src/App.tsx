@@ -11,6 +11,7 @@ import { SkipLink } from './components/shared/SkipLink';
 import { Header } from './components/Layout/Header';
 import { Footer } from './components/Layout/Footer';
 import { OnboardingForm } from './components/Onboarding/OnboardingForm';
+import { EcoAssistant } from './components/Assistant/EcoAssistant';
 
 /** Lazy-loaded views for code splitting and performance */
 const Dashboard = lazy(() =>
@@ -73,6 +74,7 @@ export function App(): React.JSX.Element {
         )}
       </main>
       <Footer />
+      <EcoAssistant />
     </>
   );
 }
