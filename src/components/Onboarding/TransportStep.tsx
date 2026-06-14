@@ -128,6 +128,7 @@ export const TransportStep: React.FC = () => {
         <input
           id="flightsPerYear"
           type="number"
+          className="input"
           min={0}
           max={20}
           value={transport.flightsPerYear}

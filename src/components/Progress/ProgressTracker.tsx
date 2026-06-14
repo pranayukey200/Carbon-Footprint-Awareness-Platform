@@ -235,6 +235,40 @@ export function ProgressTracker(): ReactNode {
             ))}
           </div>
         </Card>
+
+        <Card aria-label="Social Leaderboard" style={{ padding: 'var(--space-4)' }}>
+          <h3 style={{ margin: '0 0 var(--space-3) 0', fontSize: 'var(--font-size-base)' }}>Social Leaderboard</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+            {[
+              { rank: 1, name: 'Computer Science Dept.', co2: 12450 },
+              { rank: 2, name: 'Freshman Dorms', co2: 9820 },
+              { rank: 3, name: 'Green Commuters', co2: 8110 },
+              { rank: 4, name: 'You / Personal', co2: totalSaved, isUser: true }
+            ]
+              .sort((a, b) => b.co2 - a.co2)
+              .map((team, idx) => (
+                <div 
+                  key={team.name}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: 'var(--space-2)',
+                    background: team.isUser ? 'rgba(29, 158, 117, 0.15)' : 'var(--color-bg-tertiary)',
+                    border: team.isUser ? '1px solid var(--color-accent-primary)' : '1px solid transparent',
+                    borderRadius: 'var(--radius-md)',
+                    fontSize: 'var(--font-size-xs)'
+                  }}
+                >
+                  <span style={{ display: 'flex', gap: 'var(--space-2)', alignItems: 'center' }}>
+                    <span style={{ fontWeight: 'bold', color: 'var(--color-accent-tertiary)' }}>#{idx + 1}</span>
+                    <span style={{ fontWeight: team.isUser ? 'bold' : 'normal' }}>{team.name}</span>
+                  </span>
+                  <span style={{ fontWeight: 'bold', color: 'var(--color-accent-primary)' }}>{team.co2.toLocaleString()} kg</span>
+                </div>
+              ))}
+          </div>
+        </Card>
       </div>
 
       {progressLog.length === 0 ? (

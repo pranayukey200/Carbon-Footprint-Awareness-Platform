@@ -12,6 +12,7 @@ import { Header } from './components/Layout/Header';
 import { Footer } from './components/Layout/Footer';
 import { OnboardingForm } from './components/Onboarding/OnboardingForm';
 import { EcoAssistant } from './components/Assistant/EcoAssistant';
+import { InteractiveBackground } from './components/shared/InteractiveBackground';
 
 /** Lazy-loaded views for code splitting and performance */
 const Landing = lazy(() =>
@@ -78,6 +79,7 @@ export function App(): React.JSX.Element {
   return (
     <>
       <SkipLink />
+      <InteractiveBackground />
       {isOnboarded && <Header currentView={currentView} onViewChange={handleViewChange} />}
       <main id="main-content" className="main" role="main" aria-label="Main content">
         {isOnboarded ? (

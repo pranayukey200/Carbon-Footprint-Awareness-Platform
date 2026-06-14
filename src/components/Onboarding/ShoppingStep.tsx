@@ -47,6 +47,7 @@ export const ShoppingStep: React.FC = () => {
         <input
           id="monthlySpending"
           type="number"
+          className="input"
           min={0}
           max={5000}
           value={shopping.monthlySpendingUsd}
@@ -98,6 +99,7 @@ export const ShoppingStep: React.FC = () => {
         <input
           id="electronicsPerYear"
           type="number"
+          className="input"
           min={0}
           max={20}
           value={shopping.electronicsPerYear}

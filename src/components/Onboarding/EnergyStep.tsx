@@ -32,6 +32,7 @@ export const EnergyStep: React.FC = () => {
         <input
           id="electricityKwh"
           type="number"
+          className="input"
           min={0}
           max={2000}
           value={energy.monthlyElectricityKwh}
@@ -52,6 +53,7 @@ export const EnergyStep: React.FC = () => {
         <input
           id="gasUsage"
           type="number"
+          className="input"
           min={0}
           max={200}
           value={energy.monthlyGasUsageTherms}
@@ -96,6 +98,7 @@ export const EnergyStep: React.FC = () => {
         <input
           id="householdSize"
           type="number"
+          className="input"
           min={1}
           max={10}
           value={energy.householdSize}

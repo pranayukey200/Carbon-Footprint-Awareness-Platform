@@ -138,11 +138,10 @@ export const OnboardingForm: React.FC = () => {
       {/* Active step or review */}
       {isReview ? <ReviewSummary profile={userProfile} /> : StepComponent && <StepComponent />}
 
-      {/* Navigation */}
       <div className="step-actions">
         <button
           type="button"
-          className="step-actions__btn step-actions__btn--back"
+          className="btn btn--secondary"
           disabled={isFirstStep}
           onClick={handleBack}
           onKeyDown={handleKeyDown(handleBack)}
@@ -152,7 +151,7 @@ export const OnboardingForm: React.FC = () => {
         </button>
         <button
           type="button"
-          className="step-actions__btn step-actions__btn--next"
+          className="btn btn--primary"
           onClick={handleNext}
           onKeyDown={handleKeyDown(handleNext)}
           aria-label={isReview ? 'Calculate my carbon footprint' : 'Go to next step'}
