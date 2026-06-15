@@ -3,10 +3,9 @@
  * @module components/Actions/ActionList
  */
 
-import { useState, useMemo } from 'react';
-import type { ReactNode } from 'react';
+import { useState, useMemo, type ReactNode } from 'react';
 import { useCarbonStore } from '../../store/carbonStore';
-import { CategoryType } from '../../types';
+import type { CategoryType } from '../../types';
 import { ActionCard } from './ActionCard';
 import { SmartCarbonTools } from './SmartCarbonTools';
 

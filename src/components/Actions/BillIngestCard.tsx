@@ -15,21 +15,31 @@ export const BillIngestCard: React.FC<BillIngestCardProps> = ({
 }) => {
   const [billFile, setBillFile] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState(false);
+  const [scanMessage, setScanMessage] = useState<string | null>(null);
 
   const handleBillUpload = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (!e.target.files?.[0]) return;
-      setBillFile(e.target.files[0].name);
+      if (!e.target.files?.[0]) {return;}
+      const fileName = e.target.files[0].name;
+      setBillFile(fileName);
       setIsScanning(true);
+      setScanMessage(null);
       setTimeout(() => {
         setIsScanning(false);
         setEnergyProfile({ monthlyElectricityKwh: 450, monthlyGasUsageTherms: 22 });
         calculateScore();
-        alert('OCR Scan Success! Extracted: 450 kWh Electricity, 22 therms Gas. Dashboard updated!');
+        setScanMessage('OCR Scan Success! Extracted: 450 kWh Electricity, 22 therms Gas. Dashboard updated!');
       }, 1500);
     },
     [setEnergyProfile, calculateScore],
   );
+
+  let scanText = 'Drag & drop or click to upload bill';
+  if (isScanning) {
+    scanText = '🔍 Scanning Bill with OCR...';
+  } else if (billFile) {
+    scanText = `📄 ${billFile}`;
+  }
 
   return (
     <Card aria-label="Automated bill ingestion OCR scanner" style={{ padding: 'var(--space-4)' }}>
@@ -62,14 +72,13 @@ export const BillIngestCard: React.FC<BillIngestCardProps> = ({
           }}
           aria-label="Upload utility bill image or pdf"
         />
-        <span>
-          {isScanning
-            ? '🔍 Scanning Bill with OCR...'
-            : billFile
-              ? `📄 ${billFile}`
-              : 'Drag & drop or click to upload bill'}
-        </span>
+        <span>{scanText}</span>
       </div>
+      {scanMessage && (
+        <div style={{ marginTop: 'var(--space-2)', fontSize: 'var(--font-size-xs)', color: '#10b981', fontWeight: '500' }}>
+          {scanMessage}
+        </div>
+      )}
     </Card>
   );
 };

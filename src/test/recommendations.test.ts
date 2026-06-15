@@ -6,8 +6,7 @@
 import { describe, it, expect } from 'vitest';
 import { generateRecommendations } from '../services/recommendations';
 import { calculateTotalFootprint } from '../utils/carbonCalculations';
-import { DEFAULT_PROFILE, TransportMode, DietType, CategoryType } from '../types';
-import type { UserProfile } from '../types';
+import { DEFAULT_PROFILE, TransportMode, DietType, CategoryType, type UserProfile } from '../types';
 
 describe('generateRecommendations', () => {
   const defaultScore = calculateTotalFootprint(DEFAULT_PROFILE);

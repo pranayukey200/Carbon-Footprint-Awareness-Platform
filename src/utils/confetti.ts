@@ -23,7 +23,7 @@ const COLORS = ['#1D9E75', '#F2A623', '#E85D24', '#3B82F6', '#8B5CF6', '#34D399'
  * Trigger a fullscreen confetti burst celebration.
  */
 export function burstConfetti(): void {
-  if (typeof window === 'undefined') return;
+  if (typeof window === 'undefined') {return;}
 
   const canvas = document.createElement('canvas');
   canvas.style.position = 'fixed';
@@ -36,7 +36,7 @@ export function burstConfetti(): void {
   document.body.appendChild(canvas);
 
   const ctx = canvas.getContext('2d');
-  if (!ctx) return;
+  if (!ctx) {return;}
 
   let width = (canvas.width = window.innerWidth);
   let height = (canvas.height = window.innerHeight);
@@ -66,7 +66,7 @@ export function burstConfetti(): void {
   let active = true;
 
   function updateAndRender(): void {
-    if (!active || !ctx) return;
+    if (!active || !ctx) {return;}
     ctx.clearRect(0, 0, width, height);
 
     let finished = true;

@@ -18,6 +18,13 @@ interface SimulatorControlsProps {
   readonly updateSimState: <K extends keyof SimState>(key: K, val: SimState[K]) => void;
 }
 
+const TAB_LABELS: Record<string, string> = {
+  transport: '🚗 Travel',
+  diet: '🥗 Diet',
+  energy: '⚡ Energy',
+  shopping: '🛒 Shop',
+};
+
 /**
  * SimulatorControls renders tab switches and mounts the active lifestyle inputs component.
  */
@@ -58,7 +65,7 @@ export const SimulatorControls: React.FC<SimulatorControlsProps> = ({
             }}
             onClick={() => setActiveCategoryTab(tab)}
           >
-            {tab === 'transport' ? '🚗 Travel' : tab === 'diet' ? '🥗 Diet' : tab === 'energy' ? '⚡ Energy' : '🛒 Shop'}
+            {TAB_LABELS[tab] ?? tab}
           </button>
         ))}
       </nav>

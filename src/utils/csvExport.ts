@@ -5,7 +5,7 @@ import type { ProgressEntry } from '../types';
  * @param progressLog List of progress entry logs to export
  */
 export const exportProgressToCSV = (progressLog: readonly ProgressEntry[]): void => {
-  if (progressLog.length === 0) return;
+  if (progressLog.length === 0) {return;}
   const headers = 'Date,Action,Category,Saved(kg CO2),Notes\n';
   const rows = progressLog
     .map((e) => {

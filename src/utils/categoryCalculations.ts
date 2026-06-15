@@ -3,13 +3,7 @@
  * @module utils/categoryCalculations
  */
 
-import { FuelType, TransportMode } from '../types';
-import type {
-  TransportProfile,
-  DietProfile,
-  EnergyProfile,
-  ShoppingProfile,
-} from '../types';
+import { FuelType, TransportMode, type TransportProfile, type DietProfile, type EnergyProfile, type ShoppingProfile } from '../types';
 import {
   TRANSPORT_FACTOR_KG_PER_KM,
   WEEKS_PER_YEAR,

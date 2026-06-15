@@ -26,10 +26,10 @@ export const VirtualPlanet: React.FC<VirtualPlanetProps> = ({ simulatedScore }) 
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) {return;}
 
     const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    if (!ctx) {return;}
 
     let width = (canvas.width = canvas.parentElement?.clientWidth || 400);
     let height = (canvas.height = 240);
@@ -77,7 +77,13 @@ export const VirtualPlanet: React.FC<VirtualPlanetProps> = ({ simulatedScore }) 
       // Ground
       ctx.beginPath();
       ctx.ellipse(width / 2, height + 80, width * 0.7, 160, 0, 0, Math.PI * 2);
-      ctx.fillStyle = health > 60 ? '#15803d' : health > 30 ? '#854d0e' : '#451a03';
+      let groundColor = '#451a03';
+      if (health > 60) {
+        groundColor = '#15803d';
+      } else if (health > 30) {
+        groundColor = '#854d0e';
+      }
+      ctx.fillStyle = groundColor;
       ctx.fill();
 
       // Particles

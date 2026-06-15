@@ -34,7 +34,7 @@ export function formatCO2Compact(kg: number): string {
  * @param decimals - Number of decimal places (default: 0)
  * @returns Formatted percentage string (e.g., "42%")
  */
-export function formatPercentage(value: number, decimals: number = 0): string {
+export function formatPercentage(value: number, decimals = 0): string {
   return `${value.toFixed(decimals)}%`;
 }
 
@@ -90,10 +90,10 @@ export function getRelativeTime(date: Date | string): string {
   const diffHours = Math.floor(diffMinutes / 60);
   const diffDays = Math.floor(diffHours / 24);
 
-  if (diffMinutes < 1) return 'just now';
-  if (diffMinutes < 60) return `${diffMinutes}m ago`;
-  if (diffHours < 24) return `${diffHours}h ago`;
-  if (diffDays < 7) return `${diffDays}d ago`;
+  if (diffMinutes < 1) {return 'just now';}
+  if (diffMinutes < 60) {return `${diffMinutes}m ago`;}
+  if (diffHours < 24) {return `${diffHours}h ago`;}
+  if (diffDays < 7) {return `${diffDays}d ago`;}
   return formatDate(dateObj);
 }
 
@@ -112,9 +112,9 @@ export function formatNumber(value: number): string {
  * @returns CSS class suffix for color coding
  */
 export function getScoreColor(ratio: number): string {
-  if (ratio <= 0.5) return 'excellent';
-  if (ratio <= 0.8) return 'good';
-  if (ratio <= 1.2) return 'average';
-  if (ratio <= 1.5) return 'high';
+  if (ratio <= 0.5) {return 'excellent';}
+  if (ratio <= 0.8) {return 'good';}
+  if (ratio <= 1.2) {return 'average';}
+  if (ratio <= 1.5) {return 'high';}
   return 'critical';
 }

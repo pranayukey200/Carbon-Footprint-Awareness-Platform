@@ -5,9 +5,8 @@
  */
 
 import { useMemo } from 'react';
-import type { CarbonScore, UserProfile, TrendDataPoint, ProgressEntry } from '../types';
+import { type CarbonScore, type UserProfile, type TrendDataPoint, type ProgressEntry, CategoryType } from '../types';
 import { calculateTotalFootprint } from '../utils/carbonCalculations';
-import { CategoryType } from '../types';
 
 /** Chart-ready breakdown data for category visualization */
 export interface CategoryBreakdownData {
@@ -50,7 +49,7 @@ export function useCarbonCalculations(profile: UserProfile): CarbonScore {
  */
 export function useCategoryBreakdown(score: CarbonScore | null): CategoryBreakdownData[] {
   return useMemo(() => {
-    if (!score) return [];
+    if (!score) {return [];}
 
     return score.categories.map((cat) => ({
       name: CATEGORY_LABELS[cat.category] ?? cat.category,
@@ -72,7 +71,7 @@ export function useTrendData(
   progressLog: readonly ProgressEntry[],
 ): TrendDataPoint[] {
   return useMemo(() => {
-    if (trendData.length === 0) return [];
+    if (trendData.length === 0) {return [];}
 
     const totalSaved = progressLog.reduce((sum, entry) => sum + entry.kgCO2Saved, 0);
 

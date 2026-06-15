@@ -5,8 +5,7 @@
  * @module components/shared/Button
  */
 
-import { forwardRef } from 'react';
-import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from 'react';
 
 /* ─── Types ─────────────────────────────────────────────────────────── */
 

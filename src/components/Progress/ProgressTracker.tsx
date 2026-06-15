@@ -4,8 +4,7 @@
  * @module components/Progress/ProgressTracker
  */
 
-import { useMemo, useCallback, useState } from 'react';
-import type { ReactNode } from 'react';
+import { useMemo, useCallback, useState, type ReactNode } from 'react';
 import { useCarbonStore } from '../../store/carbonStore';
 import { ProgressCard } from './ProgressCard';
 import { calculateStreak } from '../../utils/streak';
@@ -29,7 +28,7 @@ export function ProgressTracker(): ReactNode {
 
   const handleLogSubmit = useCallback((actionId: string, qty: number, noteText: string) => {
     const act = recommendations.find((a) => a.id === actionId);
-    if (!act) return;
+    if (!act) {return;}
     addProgressEntry({
       actionId,
       actionTitle: act.title,
@@ -37,7 +36,7 @@ export function ProgressTracker(): ReactNode {
       kgCO2Saved: act.potentialSavingKgCO2 * qty,
       notes: noteText,
     });
-    if (!act.isCompleted) useCarbonStore.getState().toggleActionCompleted(actionId);
+    if (!act.isCompleted) {useCarbonStore.getState().toggleActionCompleted(actionId);}
     setIsLogging(false);
   }, [recommendations, addProgressEntry]);
 

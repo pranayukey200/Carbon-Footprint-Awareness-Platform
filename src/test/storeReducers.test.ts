@@ -5,8 +5,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { runCalculateScore, runToggleActionCompleted } from '../store/storeReducers';
-import { DEFAULT_PROFILE, CategoryType, Difficulty, TransportMode } from '../types';
-import type { Action, TrendDataPoint } from '../types';
+import { DEFAULT_PROFILE, CategoryType, Difficulty, TransportMode, type Action, type TrendDataPoint } from '../types';
 
 const MOCK_ACTION: Action = {
   id: 't1',

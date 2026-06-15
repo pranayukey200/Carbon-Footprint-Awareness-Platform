@@ -28,24 +28,24 @@ export function generateRecommendations(profile: UserProfile, score: CarbonScore
     .map((seed) => {
       let icon = '💡';
       if (seed.category === CategoryType.Transport) {
-        if (seed.id === 't4') icon = '🚲';
-        else if (seed.id === 't5' || seed.id === 't6') icon = '✈️';
-        else icon = '🚗';
+        if (seed.id === 't4') {icon = '🚲';}
+        else if (seed.id === 't5' || seed.id === 't6') {icon = '✈️';}
+        else {icon = '🚗';}
       } else if (seed.category === CategoryType.Diet) {
-        if (seed.id === 'd3') icon = '🌱';
-        else if (seed.id === 'd2') icon = '🥗';
-        else if (seed.id === 'd1') icon = '🥦';
-        else icon = '🍎';
+        if (seed.id === 'd3') {icon = '🌱';}
+        else if (seed.id === 'd2') {icon = '🥗';}
+        else if (seed.id === 'd1') {icon = '🥦';}
+        else {icon = '🍎';}
       } else if (seed.category === CategoryType.Energy) {
-        if (seed.id === 'e2') icon = '🌡️';
-        else if (seed.id === 'e3') icon = '💡';
-        else if (seed.id === 'e5') icon = '☀️';
-        else icon = '⚡';
+        if (seed.id === 'e2') {icon = '🌡️';}
+        else if (seed.id === 'e3') {icon = '💡';}
+        else if (seed.id === 'e5') {icon = '☀️';}
+        else {icon = '⚡';}
       } else if (seed.category === CategoryType.Shopping) {
-        if (seed.id === 's1') icon = '👕';
-        else if (seed.id === 's2') icon = '🛠️';
-        else if (seed.id === 's7') icon = '♻️';
-        else icon = '🛒';
+        if (seed.id === 's1') {icon = '👕';}
+        else if (seed.id === 's2') {icon = '🛠️';}
+        else if (seed.id === 's7') {icon = '♻️';}
+        else {icon = '🛒';}
       }
 
       return {

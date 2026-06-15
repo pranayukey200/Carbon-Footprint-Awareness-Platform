@@ -14,9 +14,9 @@ export const InteractiveBackground: React.FC = () => {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) {return;}
     const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    if (!ctx) {return;}
 
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
@@ -56,11 +56,12 @@ export const InteractiveBackground: React.FC = () => {
     const draw = () => {
       ctx.clearRect(0, 0, width, height);
 
-      // Draw connections
       for (let i = 0; i < 40; i++) {
-        const p1 = particles[i]!;
+        const p1 = particles[i];
+        if (!p1) {continue;}
         for (let j = i + 1; j < 40; j++) {
-          const p2 = particles[j]!;
+          const p2 = particles[j];
+          if (!p2) {continue;}
           const dx = p1.x - p2.x;
           const dy = p1.y - p2.y;
           const dist = Math.sqrt(dx * dx + dy * dy);

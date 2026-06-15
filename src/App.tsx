@@ -13,6 +13,7 @@ import { Footer } from './components/Layout/Footer';
 import { OnboardingForm } from './components/Onboarding/OnboardingForm';
 import { EcoAssistant } from './components/Assistant/EcoAssistant';
 import { InteractiveBackground } from './components/shared/InteractiveBackground';
+import { ErrorBoundary } from './components/shared/ErrorBoundary';
 
 /** Lazy-loaded views for code splitting and performance */
 const Landing = lazy(() =>
@@ -80,21 +81,29 @@ export function App(): React.JSX.Element {
     }
   };
 
+  const renderMainContent = (): React.JSX.Element => {
+    if (isOnboarded) {
+      return <Suspense fallback={<LoadingFallback />}>{renderView()}</Suspense>;
+    }
+    if (showWizard) {
+      return <OnboardingForm />;
+    }
+    return (
+      <Suspense fallback={<LoadingFallback />}>
+        <Landing onStartOnboarding={handleStartOnboarding} />
+      </Suspense>
+    );
+  };
+
   return (
     <>
       <SkipLink />
       <InteractiveBackground />
       {isOnboarded && <Header currentView={currentView} onViewChange={handleViewChange} />}
       <main id="main-content" className="main" role="main" aria-label="Main content">
-        {isOnboarded ? (
-          <Suspense fallback={<LoadingFallback />}>{renderView()}</Suspense>
-        ) : showWizard ? (
-          <OnboardingForm />
-        ) : (
-          <Suspense fallback={<LoadingFallback />}>
-            <Landing onStartOnboarding={handleStartOnboarding} />
-          </Suspense>
-        )}
+        <ErrorBoundary>
+          {renderMainContent()}
+        </ErrorBoundary>
       </main>
       <Footer />
       <EcoAssistant />

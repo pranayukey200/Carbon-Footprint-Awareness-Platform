@@ -12,17 +12,18 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type {
-  AppState,
-  AppActions,
-  UserProfile,
-  TransportProfile,
-  DietProfile,
-  EnergyProfile,
-  ShoppingProfile,
-  ProgressEntry,
+import {
+  type AppState,
+  type AppActions,
+  type UserProfile,
+  type TransportProfile,
+  type DietProfile,
+  type EnergyProfile,
+  type ShoppingProfile,
+  type ProgressEntry,
+  OnboardingStep,
+  DEFAULT_PROFILE,
 } from '../types';
-import { OnboardingStep, DEFAULT_PROFILE } from '../types';
 import { STORAGE_KEYS } from '../utils/storage';
 import { runCalculateScore, runToggleActionCompleted } from './storeReducers';
 

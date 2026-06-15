@@ -8,8 +8,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { useCarbonStore } from '../store/carbonStore';
 import { calculateTotalFootprint } from '../utils/carbonCalculations';
 import { generateRecommendations } from '../services/recommendations';
-import { TransportMode, FuelType, DietType, OnboardingStep, DEFAULT_PROFILE } from '../types';
-import type { UserProfile } from '../types';
+import { TransportMode, FuelType, DietType, OnboardingStep, DEFAULT_PROFILE, type CategoryType, type UserProfile } from '../types';
 
 describe('Full User Flow Integration', () => {
   beforeEach(() => {
@@ -68,9 +67,12 @@ describe('Full User Flow Integration', () => {
     /** Verify results */
     const updatedState = useCarbonStore.getState();
     expect(updatedState.isOnboarded).toBe(true);
-    expect(updatedState.carbonScore).not.toBeNull();
-    expect(updatedState.carbonScore!.totalAnnualKgCO2).toBeGreaterThan(0);
-    expect(updatedState.carbonScore!.categories).toHaveLength(4);
+    const score = updatedState.carbonScore;
+    expect(score).not.toBeNull();
+    if (score) {
+      expect(score.totalAnnualKgCO2).toBeGreaterThan(0);
+      expect(score.categories).toHaveLength(4);
+    }
     expect(updatedState.recommendations.length).toBeGreaterThan(0);
     expect(updatedState.trendData.length).toBeGreaterThan(0);
   });
@@ -87,15 +89,19 @@ describe('Full User Flow Integration', () => {
     store.addProgressEntry({
       actionId: 'tr-02',
       actionTitle: 'Carpool to work',
-      category: 'transport' as import('../types').CategoryType,
+      category: 'transport' as CategoryType,
       kgCO2Saved: 100,
       notes: 'Started carpooling with a colleague',
     });
 
     const afterProgress = useCarbonStore.getState();
     expect(afterProgress.progressLog).toHaveLength(1);
-    expect(afterProgress.progressLog[0]!.kgCO2Saved).toBe(100);
-    expect(afterProgress.progressLog[0]!.actionTitle).toBe('Carpool to work');
+    const entry = afterProgress.progressLog[0];
+    expect(entry).toBeDefined();
+    if (entry) {
+      expect(entry.kgCO2Saved).toBe(100);
+      expect(entry.actionTitle).toBe('Carpool to work');
+    }
   });
 
   it('toggles action completion status', () => {
@@ -105,19 +111,27 @@ describe('Full User Flow Integration', () => {
     const afterOnboarding = useCarbonStore.getState();
     const firstAction = afterOnboarding.recommendations[0];
     expect(firstAction).toBeDefined();
-    expect(firstAction!.isCompleted).toBe(false);
+    if (firstAction) {
+      expect(firstAction.isCompleted).toBe(false);
 
-    /** Toggle action */
-    store.toggleActionCompleted(firstAction!.id);
-    const afterToggle = useCarbonStore.getState();
-    const toggledAction = afterToggle.recommendations.find((a) => a.id === firstAction!.id);
-    expect(toggledAction!.isCompleted).toBe(true);
+      /** Toggle action */
+      store.toggleActionCompleted(firstAction.id);
+      const afterToggle = useCarbonStore.getState();
+      const toggledAction = afterToggle.recommendations.find((a) => a.id === firstAction.id);
+      expect(toggledAction).toBeDefined();
+      if (toggledAction) {
+        expect(toggledAction.isCompleted).toBe(true);
+      }
 
-    /** Toggle back */
-    store.toggleActionCompleted(firstAction!.id);
-    const afterSecondToggle = useCarbonStore.getState();
-    const retoggledAction = afterSecondToggle.recommendations.find((a) => a.id === firstAction!.id);
-    expect(retoggledAction!.isCompleted).toBe(false);
+      /** Toggle back */
+      store.toggleActionCompleted(firstAction.id);
+      const afterSecondToggle = useCarbonStore.getState();
+      const retoggledAction = afterSecondToggle.recommendations.find((a) => a.id === firstAction.id);
+      expect(retoggledAction).toBeDefined();
+      if (retoggledAction) {
+        expect(retoggledAction.isCompleted).toBe(false);
+      }
+    }
   });
 
   it('calculation results match standalone function', () => {
@@ -140,8 +154,11 @@ describe('Full User Flow Integration', () => {
     /** Direct calculation */
     const directScore = calculateTotalFootprint(profile);
 
-    expect(storeScore!.totalAnnualKgCO2).toBe(directScore.totalAnnualKgCO2);
-    expect(storeScore!.categories.length).toBe(directScore.categories.length);
+    expect(storeScore).not.toBeNull();
+    if (storeScore) {
+      expect(storeScore.totalAnnualKgCO2).toBe(directScore.totalAnnualKgCO2);
+      expect(storeScore.categories.length).toBe(directScore.categories.length);
+    }
   });
 
   it('recommendations are filtered based on user profile', () => {

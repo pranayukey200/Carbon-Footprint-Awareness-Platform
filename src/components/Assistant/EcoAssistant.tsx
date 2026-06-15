@@ -41,7 +41,7 @@ export const EcoAssistant: React.FC = () => {
   const handleSend = useCallback(
     (textToSend?: string) => {
       const text = textToSend || input;
-      if (!text.trim()) return;
+      if (!text.trim()) {return;}
 
       const userMsg: Message = {
         id: `user-${Date.now()}`,
@@ -51,7 +51,7 @@ export const EcoAssistant: React.FC = () => {
       };
 
       setMessages((prev) => [...prev, userMsg]);
-      if (!textToSend) setInput('');
+      if (!textToSend) {setInput('');}
 
       setTimeout(() => {
         const replyText = getAssistantResponse(text, userProfile, carbonScore);

@@ -17,8 +17,7 @@ import {
   calculateTotalFootprint,
   getGlobalComparison,
 } from '../utils/carbonCalculations';
-import { TransportMode, FuelType, DietType, DEFAULT_PROFILE } from '../types';
-import type { TransportProfile, DietProfile, EnergyProfile, ShoppingProfile } from '../types';
+import { TransportMode, FuelType, DietType, DEFAULT_PROFILE, type TransportProfile, type DietProfile, type EnergyProfile, type ShoppingProfile } from '../types';
 
 /* ─── Transport Emission Tests ──────────────────────────────────────── */
 describe('calculateTransportEmissions', () => {

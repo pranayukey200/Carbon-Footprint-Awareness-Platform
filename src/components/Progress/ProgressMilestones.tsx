@@ -39,8 +39,12 @@ export const ProgressMilestones: React.FC<ProgressMilestonesProps> = ({
         <div style={{ display: 'grid', gridTemplateRows: 'repeat(7, 10px)', gridAutoFlow: 'column', gap: '3px', justifyContent: 'center' }}>
           {heatmapDays.map((day, idx) => {
             let color = 'var(--color-bg-tertiary)';
-            if (day.count > 0) {
-              color = day.count === 1 ? 'rgba(29, 158, 117, 0.4)' : day.count === 2 ? 'rgba(29, 158, 117, 0.7)' : 'var(--color-accent-primary)';
+            if (day.count === 1) {
+              color = 'rgba(29, 158, 117, 0.4)';
+            } else if (day.count === 2) {
+              color = 'rgba(29, 158, 117, 0.7)';
+            } else if (day.count > 2) {
+              color = 'var(--color-accent-primary)';
             }
             return (
               <div

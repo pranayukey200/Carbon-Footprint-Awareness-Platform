@@ -38,18 +38,18 @@ export const LogActionModal: React.FC<LogActionModalProps> = ({
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) onClose();
+      if (e.key === 'Escape' && isOpen) {onClose();}
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
   const handleSubmit = useCallback(() => {
-    if (!selectedActionId) return;
+    if (!selectedActionId) {return;}
     onSubmit(selectedActionId, quantity, sanitizeInput(notes));
   }, [selectedActionId, quantity, notes, onSubmit]);
 
-  if (!isOpen) return null;
+  if (!isOpen) {return null;}
 
   return (
     <div className="modal-overlay" role="dialog" aria-modal="true" aria-label="Log Action Modal">

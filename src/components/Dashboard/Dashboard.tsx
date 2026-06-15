@@ -3,7 +3,7 @@
  * @module components/Dashboard/Dashboard
  */
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useCarbonStore } from '../../store/carbonStore';
 import { CarbonScore } from './CarbonScore';
 import { CategoryBreakdown } from './CategoryBreakdown';
@@ -25,6 +25,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
   const carbonScore = useCarbonStore((s) => s.carbonScore);
   const progressLog = useCarbonStore((s) => s.progressLog);
   const resetProfile = useCarbonStore((s) => s.resetProfile);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   const totalSaved = useMemo(() => {
     return progressLog.reduce((sum, e) => sum + e.kgCO2Saved, 0);
@@ -57,14 +58,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
   }, [carbonScore]);
 
   const handleReset = () => {
-    if (
-      confirm(
-        'Are you sure you want to reset your profile and restart the onboarding questionnaire? All logged progress will be cleared.',
-      )
-    ) {
-      resetProfile();
-      window.location.reload();
-    }
+    setShowResetConfirm(true);
   };
 
   return (
@@ -129,6 +123,51 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
           </button>
         </Card>
       </div>
+
+      {showResetConfirm && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'rgba(0, 0, 0, 0.6)',
+          backdropFilter: 'blur(4px)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1000,
+        }}>
+          <Card style={{ padding: 'var(--space-6)', maxWidth: '400px', width: '90%', display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }} aria-label="Confirm profile reset">
+            <h3 style={{ margin: 0, fontSize: 'var(--font-size-lg)' }}>⚠️ Reset Profile?</h3>
+            <p style={{ margin: 0, fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)', lineHeight: 'var(--line-height-relaxed)' }}>
+              Are you sure you want to reset your profile and restart the onboarding questionnaire? All logged progress will be cleared.
+            </p>
+            <div style={{ display: 'flex', gap: 'var(--space-3)', justifyContent: 'flex-end', marginTop: 'var(--space-2)' }}>
+              <button
+                className="btn btn--secondary"
+                onClick={() => setShowResetConfirm(false)}
+                type="button"
+                aria-label="Cancel reset"
+              >
+                Cancel
+              </button>
+              <button
+                className="btn btn--primary"
+                onClick={() => {
+                  resetProfile();
+                  window.location.reload();
+                }}
+                style={{ backgroundColor: '#ef4444', color: 'white', border: 'none' }}
+                type="button"
+                aria-label="Confirm reset"
+              >
+                Reset
+              </button>
+            </div>
+          </Card>
+        </div>
+      )}
     </div>
   );
 };

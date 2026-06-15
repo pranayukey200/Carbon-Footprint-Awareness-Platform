@@ -14,7 +14,7 @@
  * ```
  */
 export function calculateStreak(dates: readonly string[]): number {
-  if (dates.length === 0) return 0;
+  if (dates.length === 0) {return 0;}
   let streak = 0;
   const today = new Date().setHours(0, 0, 0, 0);
   const uniqueDays = Array.from(new Set(dates.map((d) => new Date(d).setHours(0, 0, 0, 0)))).sort(

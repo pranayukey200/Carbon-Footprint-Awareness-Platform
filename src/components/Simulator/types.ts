@@ -1,4 +1,4 @@
-import { TransportMode, FuelType, DietType } from '../../types';
+import type { TransportMode, FuelType, DietType } from '../../types';
 
 export interface SimState {
   readonly dist: number;

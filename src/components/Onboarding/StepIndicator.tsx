@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { OnboardingStep } from '../../types';
+import type { OnboardingStep } from '../../types';
 
 /** Labels displayed beneath each step dot */
 const STEP_LABELS: readonly string[] = [
@@ -40,9 +40,24 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({ currentStep, total
    * @param index - Zero-based step index
    */
   const getModifier = (index: number): string => {
-    if (index < currentStep) return 'step-indicator__step--completed';
-    if (index === currentStep) return 'step-indicator__step--active';
+    if (index < currentStep) {return 'step-indicator__step--completed';}
+    if (index === currentStep) {return 'step-indicator__step--active';}
     return '';
+  };
+
+  /**
+   * Generates the descriptive ARIA label for a step.
+   * @param index - Zero-based step index
+   */
+  const getAriaLabel = (index: number): string => {
+    const label = STEP_LABELS[index] ?? '';
+    let status = '';
+    if (index < currentStep) {
+      status = ' (completed)';
+    } else if (index === currentStep) {
+      status = ' (current)';
+    }
+    return `Step ${index + 1}: ${label}${status}`;
   };
 
   return (
@@ -65,9 +80,7 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({ currentStep, total
                 index < currentStep ? ' step-indicator__dot--completed' : ''
               }${index === currentStep ? ' step-indicator__dot--active' : ''}`}
               role="img"
-              aria-label={`Step ${index + 1}: ${STEP_LABELS[index] ?? ''}${
-                index < currentStep ? ' (completed)' : index === currentStep ? ' (current)' : ''
-              }`}
+              aria-label={getAriaLabel(index)}
             >
               {index < currentStep ? '✓' : index + 1}
             </span>

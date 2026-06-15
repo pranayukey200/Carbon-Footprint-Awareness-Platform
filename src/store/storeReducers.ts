@@ -61,7 +61,7 @@ export function runToggleActionCompleted(
   trendData: readonly TrendDataPoint[];
 }> {
   const action = state.recommendations.find((a) => a.id === actionId);
-  if (!action) return {};
+  if (!action) {return {};}
 
   const nextIsCompleted = !action.isCompleted;
   const updatedRecommendations = state.recommendations.map((a) =>

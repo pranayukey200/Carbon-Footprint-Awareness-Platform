@@ -41,7 +41,7 @@ export const Landing: React.FC<LandingProps> = ({ onStartOnboarding }) => {
 
   // Generate 12 random leaf particles for the drift animation
   const particles = useMemo<readonly ParticleLeaf[]>(() => {
-    if (prefersReducedMotion) return [];
+    if (prefersReducedMotion) {return [];}
     return Array.from({ length: 12 }, (_, i) => ({
       id: i,
       char: LEAVES[Math.floor(Math.random() * LEAVES.length)] || '🌿',

@@ -11,10 +11,12 @@ export const CommuteOffsetCard: React.FC = () => {
   const [commuteSaved, setCommuteSaved] = useState<string | null>(null);
 
   const calculateCommute = useCallback(() => {
-    if (!startPoint || !endPoint) return;
+    if (!startPoint || !endPoint) {return;}
     const distance = Math.floor(Math.random() * 15 + 5);
-    const savings =
-      commuteMode === 'transit' ? distance * 0.3 : commuteMode === 'bicycle' ? distance * 0.4 : distance * 0.4;
+    let savings = distance * 0.4;
+    if (commuteMode === 'transit') {
+      savings = distance * 0.3;
+    }
     setCommuteSaved(
       `${savings.toFixed(1)} kg CO₂ saved compared to standard car (Distance: ${distance} km)`,
     );

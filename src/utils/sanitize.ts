@@ -29,7 +29,7 @@ export function sanitizeInput(input: string): string {
  * @param fallback - Default value if conversion fails (default: 0)
  * @returns Validated numeric value
  */
-export function sanitizeNumber(input: unknown, fallback: number = 0): number {
+export function sanitizeNumber(input: unknown, fallback = 0): number {
   if (typeof input === 'number' && Number.isFinite(input)) {
     return input;
   }
@@ -84,7 +84,7 @@ export function clampNumber(value: number, min: number, max: number): number {
  * @returns A promise that resolves to the hex-encoded hash.
  */
 export async function hashEmail(email: string): Promise<string> {
-  if (!email) return '';
+  if (!email) {return '';}
   const encoder = new TextEncoder();
   const data = encoder.encode(email.trim().toLowerCase());
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);

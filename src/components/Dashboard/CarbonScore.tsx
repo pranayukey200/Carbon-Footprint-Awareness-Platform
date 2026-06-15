@@ -28,7 +28,7 @@ export function CarbonScore(): React.JSX.Element {
   const netScore = carbonScore ? Math.max(0, carbonScore.totalAnnualKgCO2 - totalSaved) : 0;
 
   useEffect(() => {
-    if (!carbonScore) return;
+    if (!carbonScore) {return;}
     const start = 0;
     const end = netScore;
     if (start === end) {
