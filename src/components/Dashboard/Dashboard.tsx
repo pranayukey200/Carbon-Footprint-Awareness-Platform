@@ -119,7 +119,12 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
               Simulate changes to your lifestyle (commute distance, diet, clean energy, recycling) and witness the real-time visual evolution of your virtual planet.
             </p>
           </div>
-          <button className="btn btn--primary btn--full" onClick={() => onNavigate('simulator')} style={{ padding: '10px' }}>
+          <button
+            className="btn btn--primary btn--full"
+            onClick={() => onNavigate('simulator')}
+            style={{ padding: '10px' }}
+            aria-label="Launch Interactive Carbon Footprint Simulator"
+          >
             Launch Simulator 🚀
           </button>
         </Card>

@@ -114,8 +114,8 @@ export const LogActionModal: React.FC<LogActionModalProps> = ({
           </div>
 
           <footer style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--space-2)' }}>
-            <button type="button" className="btn btn--secondary" onClick={onClose}>Cancel</button>
-            <button type="button" className="btn btn--primary" onClick={handleSubmit}>Log Action</button>
+            <button type="button" className="btn btn--secondary" onClick={onClose} aria-label="Cancel action logging and close modal">Cancel</button>
+            <button type="button" className="btn btn--primary" onClick={handleSubmit} aria-label="Submit and save action to progress log">Log Action</button>
           </footer>
         </div>
       </div>

@@ -105,10 +105,10 @@ export const EcoAssistant: React.FC = () => {
           </div>
 
           <div className="assistant-panel__actions">
-            <button onClick={() => handleSend('Analyze my footprint')}>📊 Analyze</button>
-            <button onClick={() => handleSend('How can I cut transport?')}>🚗 Travel</button>
-            <button onClick={() => handleSend('How can I cut energy?')}>⚡ Energy</button>
-            <button onClick={() => handleSend('How to offset?')}>🌳 Offsetting</button>
+            <button onClick={() => handleSend('Analyze my footprint')} aria-label="Ask assistant to analyze my footprint">📊 Analyze</button>
+            <button onClick={() => handleSend('How can I cut transport?')} aria-label="Ask assistant how to reduce travel emissions">🚗 Travel</button>
+            <button onClick={() => handleSend('How can I cut energy?')} aria-label="Ask assistant how to reduce home energy emissions">⚡ Energy</button>
+            <button onClick={() => handleSend('How to offset?')} aria-label="Ask assistant about carbon offsetting options">🌳 Offsetting</button>
           </div>
 
           <form

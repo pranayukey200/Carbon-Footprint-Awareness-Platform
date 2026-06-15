@@ -10,6 +10,7 @@ import {
   validateEmail,
   escapeHtml,
   clampNumber,
+  hashEmail,
 } from '../utils/sanitize';
 
 describe('sanitizeInput', () => {
@@ -136,5 +137,24 @@ describe('clampNumber', () => {
   it('handles edge case at boundaries', () => {
     expect(clampNumber(0, 0, 10)).toBe(0);
     expect(clampNumber(10, 0, 10)).toBe(10);
+  });
+});
+
+describe('hashEmail', () => {
+  it('hashes a standard email correctly and returns the SHA-256 hex digest', async () => {
+    const email = 'test@example.com';
+    const hash = await hashEmail(email);
+    expect(hash).toBe('973dfe463ec85785f5f95af5ba3906eedb2d931c24e69824a89ea65dba4e813b');
+  });
+
+  it('normalizes case and trims spacing before hashing', async () => {
+    const hash1 = await hashEmail(' TEST@example.com ');
+    const hash2 = await hashEmail('test@example.com');
+    expect(hash1).toBe(hash2);
+  });
+
+  it('returns empty string for empty input', async () => {
+    const hash = await hashEmail('');
+    expect(hash).toBe('');
   });
 });

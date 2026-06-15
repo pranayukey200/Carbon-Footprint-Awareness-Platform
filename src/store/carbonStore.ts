@@ -21,13 +21,10 @@ import type {
   EnergyProfile,
   ShoppingProfile,
   ProgressEntry,
-  TrendDataPoint,
 } from '../types';
 import { OnboardingStep, DEFAULT_PROFILE } from '../types';
-import { calculateTotalFootprint } from '../utils/carbonCalculations';
-import { generateRecommendations } from '../services/recommendations';
 import { STORAGE_KEYS } from '../utils/storage';
-import { syncProfileWithAction } from '../utils/profileSync';
+import { runCalculateScore, runToggleActionCompleted } from './storeReducers';
 
 /** Initial application state with sensible defaults */
 const INITIAL_STATE: AppState = {
@@ -92,24 +89,8 @@ export const useCarbonStore = create<AppState & AppActions>()(
       },
 
       calculateScore: (): void => {
-        const { userProfile } = get();
-        const score = calculateTotalFootprint(userProfile);
-        const recommendations = generateRecommendations(userProfile, score);
-
-        const trendPoint: TrendDataPoint = {
-          date: new Date().toISOString(),
-          totalKgCO2: score.totalAnnualKgCO2,
-          transport: score.categories[0]?.annualKgCO2 ?? 0,
-          diet: score.categories[1]?.annualKgCO2 ?? 0,
-          energy: score.categories[2]?.annualKgCO2 ?? 0,
-          shopping: score.categories[3]?.annualKgCO2 ?? 0,
-        };
-
-        set((state) => ({
-          carbonScore: score,
-          recommendations,
-          trendData: [...state.trendData.slice(-11), trendPoint],
-        }));
+        const { userProfile, trendData } = get();
+        set(runCalculateScore(userProfile, trendData));
       },
 
       addProgressEntry: (entry: Omit<ProgressEntry, 'id' | 'completedAt'>): void => {
@@ -138,33 +119,7 @@ export const useCarbonStore = create<AppState & AppActions>()(
       },
 
       toggleActionCompleted: (actionId: string): void => {
-        set((state) => {
-          const action = state.recommendations.find((a) => a.id === actionId);
-          if (!action) return {};
-
-          const nextIsCompleted = !action.isCompleted;
-          const updatedRecommendations = state.recommendations.map((a) =>
-            a.id === actionId ? { ...a, isCompleted: nextIsCompleted } : a,
-          );
-
-          const updatedProfile = syncProfileWithAction(state.userProfile, actionId, nextIsCompleted);
-          const score = calculateTotalFootprint(updatedProfile);
-          const trendPoint = {
-            date: new Date().toISOString(),
-            totalKgCO2: score.totalAnnualKgCO2,
-            transport: score.categories[0]?.annualKgCO2 ?? 0,
-            diet: score.categories[1]?.annualKgCO2 ?? 0,
-            energy: score.categories[2]?.annualKgCO2 ?? 0,
-            shopping: score.categories[3]?.annualKgCO2 ?? 0,
-          };
-
-          return {
-            recommendations: updatedRecommendations,
-            userProfile: updatedProfile,
-            carbonScore: score,
-            trendData: [...state.trendData.slice(-11), trendPoint],
-          };
-        });
+        set((state) => runToggleActionCompleted(state, actionId));
       },
     }),
     {

@@ -56,7 +56,11 @@ export const CommuteOffsetCard: React.FC = () => {
           <option value="bicycle">🚲 Bicycle / Walk</option>
           <option value="electric">⚡ Electric Car</option>
         </select>
-        <button className="btn btn--primary" onClick={calculateCommute}>
+        <button
+          className="btn btn--primary"
+          onClick={calculateCommute}
+          aria-label="Calculate offset savings for commute"
+        >
           Offset
         </button>
       </div>
