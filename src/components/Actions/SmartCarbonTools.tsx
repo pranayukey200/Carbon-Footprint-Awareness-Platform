@@ -36,4 +36,3 @@ export const SmartCarbonTools: React.FC<SmartCarbonToolsProps> = ({
   );
 };
 
-export default SmartCarbonTools;

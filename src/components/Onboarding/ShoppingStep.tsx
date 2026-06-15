@@ -135,4 +135,3 @@ export const ShoppingStep: React.FC = () => {
   );
 };
 
-export default ShoppingStep;

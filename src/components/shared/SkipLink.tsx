@@ -37,4 +37,3 @@ export function SkipLink(): React.JSX.Element {
   );
 }
 
-export default SkipLink;

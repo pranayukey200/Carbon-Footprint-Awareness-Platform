@@ -34,4 +34,3 @@ export const ProgressStats: React.FC<ProgressStatsProps> = ({
   );
 };
 
-export default ProgressStats;

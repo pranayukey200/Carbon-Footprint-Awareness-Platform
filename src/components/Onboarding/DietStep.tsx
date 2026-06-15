@@ -105,4 +105,3 @@ export const DietStep: React.FC = () => {
   );
 };
 
-export default DietStep;

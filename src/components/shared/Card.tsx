@@ -102,5 +102,4 @@ export function Card({
   );
 }
 
-export default Card;
 export type { CardProps };

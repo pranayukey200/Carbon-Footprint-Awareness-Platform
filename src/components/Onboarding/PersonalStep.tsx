@@ -98,4 +98,3 @@ export const PersonalStep: React.FC = () => {
   );
 };
 
-export default PersonalStep;

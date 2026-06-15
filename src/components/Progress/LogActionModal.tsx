@@ -122,4 +122,3 @@ export const LogActionModal: React.FC<LogActionModalProps> = ({
     </div>
   );
 };
-export default LogActionModal;

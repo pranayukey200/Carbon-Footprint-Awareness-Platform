@@ -77,4 +77,3 @@ export const DietControls: React.FC<DietControlsProps> = ({
     </>
   );
 };
-export default DietControls;

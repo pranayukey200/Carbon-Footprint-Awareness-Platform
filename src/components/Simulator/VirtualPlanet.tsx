@@ -144,4 +144,3 @@ export const VirtualPlanet: React.FC<VirtualPlanetProps> = ({ simulatedScore }) 
     />
   );
 };
-export default VirtualPlanet;

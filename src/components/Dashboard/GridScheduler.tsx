@@ -65,4 +65,3 @@ export const GridScheduler: React.FC = () => {
     </Card>
   );
 };
-export default GridScheduler;

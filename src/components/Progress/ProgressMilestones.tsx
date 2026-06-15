@@ -86,4 +86,3 @@ export const ProgressMilestones: React.FC<ProgressMilestonesProps> = ({
     </div>
   );
 };
-export default ProgressMilestones;

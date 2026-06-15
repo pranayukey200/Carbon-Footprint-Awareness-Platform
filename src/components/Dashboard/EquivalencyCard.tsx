@@ -51,4 +51,3 @@ export const EquivalencyCard: React.FC<EquivalencyCardProps> = ({ scoreValue }) 
     </Card>
   );
 };
-export default EquivalencyCard;

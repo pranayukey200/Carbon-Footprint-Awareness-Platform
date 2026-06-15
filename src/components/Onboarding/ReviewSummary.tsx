@@ -48,4 +48,3 @@ export const ReviewSummary: React.FC<ReviewSummaryProps> = ({ profile }) => (
   </section>
 );
 
-export default ReviewSummary;

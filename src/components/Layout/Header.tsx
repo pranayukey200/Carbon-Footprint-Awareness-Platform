@@ -106,5 +106,4 @@ export function Header({ currentView, onViewChange }: HeaderProps): React.JSX.El
   );
 }
 
-export default Header;
 export type { HeaderProps, View };

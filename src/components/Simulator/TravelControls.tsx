@@ -120,4 +120,3 @@ export const TravelControls: React.FC<TravelControlsProps> = ({
     </>
   );
 };
-export default TravelControls;

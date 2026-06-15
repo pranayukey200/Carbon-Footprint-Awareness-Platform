@@ -127,4 +127,3 @@ export const SimulatorControls: React.FC<SimulatorControlsProps> = ({
   );
 };
 
-export default SimulatorControls;

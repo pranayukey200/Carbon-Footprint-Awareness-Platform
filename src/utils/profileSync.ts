@@ -97,4 +97,3 @@ export function syncProfileWithAction(
     shopping,
   };
 }
-export default syncProfileWithAction;

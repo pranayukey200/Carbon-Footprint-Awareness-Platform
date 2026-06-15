@@ -114,4 +114,3 @@ export const EnergyStep: React.FC = () => {
   );
 };
 
-export default EnergyStep;

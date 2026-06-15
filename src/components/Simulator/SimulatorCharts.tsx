@@ -119,4 +119,3 @@ export const SimulatorCharts: React.FC<SimulatorChartsProps> = ({
     </div>
   );
 };
-export default SimulatorCharts;

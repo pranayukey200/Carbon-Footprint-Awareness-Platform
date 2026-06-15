@@ -95,4 +95,3 @@ export const ShoppingControls: React.FC<ShoppingControlsProps> = ({
     </>
   );
 };
-export default ShoppingControls;

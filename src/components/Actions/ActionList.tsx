@@ -84,4 +84,3 @@ export function ActionList(): ReactNode {
   );
 }
 
-export default ActionList;

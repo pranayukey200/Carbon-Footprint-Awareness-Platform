@@ -72,4 +72,3 @@ export const SimulatorView: React.FC = () => {
   );
 };
 
-export default SimulatorView;

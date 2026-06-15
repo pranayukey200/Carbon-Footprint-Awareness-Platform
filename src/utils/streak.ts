@@ -36,4 +36,3 @@ export function calculateStreak(dates: readonly string[]): number {
   }
   return streak;
 }
-export default calculateStreak;

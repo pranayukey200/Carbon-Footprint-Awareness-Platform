@@ -133,4 +133,3 @@ export const TransportStep: React.FC = () => {
   );
 };
 
-export default TransportStep;
