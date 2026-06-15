@@ -26,6 +26,7 @@ export const LogActionModal: React.FC<LogActionModalProps> = ({
   const [selectedActionId, setSelectedActionId] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [notes, setNotes] = useState('');
+  const modalRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -37,9 +38,40 @@ export const LogActionModal: React.FC<LogActionModalProps> = ({
   }, [isOpen, recommendations]);
 
   useEffect(() => {
+    if (!isOpen) {return;}
+
+    const focusableSelector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+    const modalElement = modalRef.current;
+    if (!modalElement) {return;}
+
+    const focusable = Array.from(modalElement.querySelectorAll<HTMLElement>(focusableSelector));
+    const firstEl = focusable[0];
+    const lastEl = focusable[focusable.length - 1];
+
+    if (firstEl) {
+      firstEl.focus();
+    }
+
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {onClose();}
+      if (e.key === 'Escape') {
+        onClose();
+        return;
+      }
+      if (e.key === 'Tab') {
+        if (e.shiftKey) {
+          if (document.activeElement === firstEl && lastEl) {
+            lastEl.focus();
+            e.preventDefault();
+          }
+        } else {
+          if (document.activeElement === lastEl && firstEl) {
+            firstEl.focus();
+            e.preventDefault();
+          }
+        }
+      }
     };
+
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
@@ -52,7 +84,7 @@ export const LogActionModal: React.FC<LogActionModalProps> = ({
   if (!isOpen) {return null;}
 
   return (
-    <div className="modal-overlay" role="dialog" aria-modal="true" aria-label="Log Action Modal">
+    <div ref={modalRef} className="modal-overlay" role="dialog" aria-modal="true" aria-label="Log Action Modal">
       <div className="modal-content glass" style={{ maxWidth: '480px', width: '90%' }}>
         <header style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-4)' }}>
           <h3 style={{ margin: 0 }}>Log Action</h3>

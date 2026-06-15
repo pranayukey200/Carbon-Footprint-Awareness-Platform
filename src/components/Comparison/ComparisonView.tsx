@@ -30,7 +30,7 @@ export const ComparisonView: React.FC = () => {
 
   if (!carbonScore) {
     return (
-      <div className="comparison" role="main" aria-label="Comparison View Empty State">
+      <div className="comparison" aria-label="Comparison View Empty State">
         <Card className="score-card">
           <p className="empty-state__title">Calculate your score to compare averages.</p>
         </Card>
@@ -41,8 +41,7 @@ export const ComparisonView: React.FC = () => {
   const userFootprint = carbonScore.totalAnnualKgCO2;
   const benchmarks: readonly ComparisonBenchmark[] = [
     { label: 'Your Footprint', kg: userFootprint },
-    { label: 'Indian Per-Capita Average', kg: 1900 },
-    { label: 'City Average (Bangalore)', kg: 3200 },
+    { label: 'City Average (Estimate)', kg: 3800 },
     { label: 'Global Average', kg: carbonScore.globalComparison.worldAverageKg },
     { label: 'US National Average', kg: carbonScore.globalComparison.usAverageKg },
   ];
@@ -57,15 +56,9 @@ export const ComparisonView: React.FC = () => {
         100,
     ),
   );
-  
-  const percentVsIndia = Math.round(
-    (Math.abs(userFootprint - 1900) / 1900) *
-      100,
-  );
-  const isAboveIndia = userFootprint > 1900;
 
   return (
-    <div className="comparison" role="main" aria-label="Footprint Comparison Page">
+    <div className="comparison" aria-label="Footprint Comparison Page">
       <header className="dashboard__header">
         <h1 className="dashboard__title">Comparison View</h1>
         <p className="dashboard__subtitle">
@@ -77,8 +70,7 @@ export const ComparisonView: React.FC = () => {
         <Card className="comparison__summary-card">
           <h2 className="card__title">How You Rank</h2>
           <p className="comparison__hero-text" style={{ fontSize: 'var(--font-size-base)', lineHeight: 'var(--line-height-relaxed)' }}>
-            You emit <span className="highlight highlight--yellow">{percentBelowUS}% less</span> than the average US household,
-            and are <span className="highlight highlight--green">{percentVsIndia}% {isAboveIndia ? 'above' : 'below'}</span> the average Indian per-capita footprint.
+            You emit <span className="highlight highlight--yellow">{percentBelowUS}% less</span> than the average US household.
           </p>
           <p className="comparison__desc">
             Your estimated footprint is{' '}

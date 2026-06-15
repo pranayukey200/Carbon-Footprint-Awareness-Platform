@@ -31,11 +31,11 @@ export const DIET_ANNUAL_KG: Record<DietType, number> = {
 };
 
 /** Energy emission factors */
-export const KG_CO2_PER_KWH = 0.417; // US Grid average
+export const KG_CO2_PER_KWH = 0.71; // India Grid average (CEA 2023)
 export const KG_CO2_PER_THERM = 5.3;  // Natural gas
 
-/** Consumer spending carbon intensity factor (kg CO₂ per USD) */
-export const KG_CO2_PER_USD = 0.7;
+/** Consumer spending carbon intensity factor (kg CO₂ per INR) */
+export const KG_CO2_PER_INR = 0.0084;
 
 /** Global and regional per-capita benchmarks (kg CO₂e/year) */
 export const WORLD_AVG_KG = 4000;

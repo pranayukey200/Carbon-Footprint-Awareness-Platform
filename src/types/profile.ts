@@ -31,7 +31,7 @@ export interface EnergyProfile {
 
 /** Shopping and consumption habits */
 export interface ShoppingProfile {
-  readonly monthlySpendingUsd: number;
+  readonly monthlySpendingInr: number;
   readonly fastFashionFrequency: 'never' | 'rarely' | 'sometimes' | 'often';
   readonly electronicsPerYear: number;
   readonly recyclingRate: number;
@@ -73,7 +73,7 @@ export const DEFAULT_ENERGY: EnergyProfile = {
 
 /** Default shopping profile values */
 export const DEFAULT_SHOPPING: ShoppingProfile = {
-  monthlySpendingUsd: 500,
+  monthlySpendingInr: 15000,
   fastFashionFrequency: 'sometimes',
   electronicsPerYear: 2,
   recyclingRate: 30,

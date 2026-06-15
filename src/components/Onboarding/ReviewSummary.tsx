@@ -40,7 +40,7 @@ export const ReviewSummary: React.FC<ReviewSummaryProps> = ({ profile }) => (
       </dd>
       <dt>Shopping</dt>
       <dd>
-        ${profile.shopping.monthlySpendingUsd}/mo · Fashion: {profile.shopping.fastFashionFrequency}
+        ₹{profile.shopping.monthlySpendingInr}/mo · Fashion: {profile.shopping.fastFashionFrequency}
         · {profile.shopping.electronicsPerYear} electronics/yr · {profile.shopping.recyclingRate}%
         recycled
       </dd>

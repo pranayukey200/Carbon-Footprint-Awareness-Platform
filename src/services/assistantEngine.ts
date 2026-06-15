@@ -114,3 +114,57 @@ Your highest emission source is **${highest?.category}** at **${highest?.annualK
 
   return "I'm not sure about that, but I can tell you about your transport, diet, energy, or shopping footprint, or give you a complete analysis of your score! Try asking: 'Analyze my footprint' or 'How can I cut energy?'";
 }
+
+/**
+ * Calls the real Gemini API to generate a personalized carbon footprint response.
+ * @param input - User's chat message.
+ * @param profile - Current user profile.
+ * @param score - Calculated carbon score.
+ * @param apiKey - Gemini API key.
+ */
+export async function getGeminiResponse(
+  input: string,
+  profile: UserProfile,
+  score: CarbonScore | null,
+  apiKey: string,
+): Promise<string> {
+  const prompt = `You are EcoLens, a helpful sustainability co-pilot assisting the user with their carbon footprint.
+User profile: ${JSON.stringify(profile)}
+Carbon score: ${score ? JSON.stringify(score) : 'Not calculated yet'}
+
+User asks: "${input}"
+
+Provide a concise, helpful response (max 150 words) with clear suggestions to help them reduce their carbon footprint. Use standard Markdown (**bold** for emphasis, bullet points, and newlines). Make it localized and highly relevant.`;
+
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [
+              {
+                text: prompt,
+              },
+            ],
+          },
+        ],
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(`Gemini API error: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!text) {
+    throw new Error('No response content from Gemini');
+  }
+  return text;
+}

@@ -6,6 +6,10 @@
  */
 
 import { describe, it, expect } from 'vitest';
+import React from 'react';
+import { render } from '@testing-library/react';
+import { Button } from '../components/shared/Button';
+import { SkipLink } from '../components/shared/SkipLink';
 
 /**
  * Validates that a string is a valid ARIA role.
@@ -139,5 +143,42 @@ describe('Accessibility: Contrast ratio validation', () => {
 
   it('fails WCAG AA for large text below 3:1', () => {
     expect(meetsContrastRequirement(2.9, true)).toBe(false);
+  });
+});
+
+describe('Accessibility: DOM Components Rendering', () => {
+  it('renders skip link with correct href and screen reader text', () => {
+    const { getByRole } = render(React.createElement(SkipLink));
+    const link = getByRole('link', { name: /skip to main content/i });
+    expect(link).toBeInTheDocument();
+    expect(link.getAttribute('href')).toBe('#main-content');
+  });
+
+  it('renders button with custom aria-label', () => {
+    const { getByRole } = render(
+      React.createElement(
+        Button,
+        { 'aria-label': 'custom-accessible-button' },
+        'Click Me'
+      )
+    );
+    const btn = getByRole('button', { name: /custom-accessible-button/i });
+    expect(btn).toBeInTheDocument();
+    expect(btn.classList.contains('btn')).toBe(true);
+  });
+
+  it('hides button icon from screen readers using aria-hidden', () => {
+    const { getByRole } = render(
+      React.createElement(
+        Button,
+        { icon: React.createElement('span', null, '🌟') },
+        'Star'
+      )
+    );
+    const btn = getByRole('button', { name: /star/i });
+    expect(btn).toBeInTheDocument();
+    const iconContainer = btn.querySelector('.btn__icon');
+    expect(iconContainer).not.toBeNull();
+    expect(iconContainer?.getAttribute('aria-hidden')).toBe('true');
   });
 });

@@ -10,16 +10,43 @@ export const GreenCartScannerCard: React.FC = () => {
 
   const matchedFood = useMemo(() => {
     const query = foodSearch.toLowerCase().trim();
-    return query
-      ? FOOD_DB[query] || {
-          name: `${foodSearch} 🍽️`,
-          co2: 5.2,
-          rating: 'Medium' as const,
-          alt: 'Organic alternatives 🌱',
-          altCo2: 2.1,
-          pct: 60,
-        }
-      : null;
+    if (!query) {return null;}
+
+    // Check custom type for database check
+    const db = FOOD_DB as Record<string, { name: string; co2: number; rating: 'High' | 'Medium' | 'Low'; alt: string; altCo2: number; pct: number } | undefined>;
+    const exactMatch = db[query];
+    if (exactMatch) {
+      return exactMatch;
+    }
+
+    let hash = 0;
+    for (let i = 0; i < query.length; i++) {
+      hash = (hash << 5) - hash + query.charCodeAt(i);
+      hash |= 0;
+    }
+    const absHash = Math.abs(hash);
+    const co2 = Math.round(((absHash % 120) / 10 + 1) * 10) / 10;
+    const altCo2 = Math.round(((absHash % 40) / 10 + 0.5) * 10) / 10;
+    const finalAltCo2 = altCo2 >= co2 ? Math.round((co2 * 0.4) * 10) / 10 : altCo2;
+    const pct = Math.round(((co2 - finalAltCo2) / co2) * 100);
+    let rating: 'High' | 'Medium' | 'Low' = 'Medium';
+    if (co2 > 6) {
+      rating = 'High';
+    } else if (co2 < 2.5) {
+      rating = 'Low';
+    }
+
+    const altPrefixes = ['Local organic', 'Plant-based', 'Eco-friendly alternative to'];
+    const altPrefix = altPrefixes[absHash % altPrefixes.length] || 'Local';
+
+    return {
+      name: `${foodSearch} 🍽️`,
+      co2,
+      rating,
+      alt: `${altPrefix} ${foodSearch} 🌱`,
+      altCo2: finalAltCo2,
+      pct,
+    };
   }, [foodSearch]);
 
   return (

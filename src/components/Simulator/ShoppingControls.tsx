@@ -33,15 +33,15 @@ export const ShoppingControls: React.FC<ShoppingControlsProps> = ({
     <>
       <div className="slider-group">
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <label htmlFor="sim-monthly-spending" className="slider-group__label">Monthly Spending</label>
-          <span>${simSpend}</span>
+          <label htmlFor="sim-monthly-spending" className="slider-group__label">Monthly Spending (₹)</label>
+          <span>₹{simSpend.toLocaleString('en-IN')}</span>
         </div>
         <input
           id="sim-monthly-spending"
           type="range"
           min="0"
-          max="5000"
-          step="100"
+          max="100000"
+          step="1000"
           value={simSpend}
           onChange={(e) => setSimSpend(parseInt(e.target.value, 10))}
         />

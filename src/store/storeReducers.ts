@@ -28,10 +28,10 @@ export function runCalculateScore(
   const trendPoint: TrendDataPoint = {
     date: new Date().toISOString(),
     totalKgCO2: score.totalAnnualKgCO2,
-    transport: score.categories[0]?.annualKgCO2 ?? 0,
-    diet: score.categories[1]?.annualKgCO2 ?? 0,
-    energy: score.categories[2]?.annualKgCO2 ?? 0,
-    shopping: score.categories[3]?.annualKgCO2 ?? 0,
+    transport: score.categories.find((c) => c.category === 'transport')?.annualKgCO2 ?? 0,
+    diet: score.categories.find((c) => c.category === 'diet')?.annualKgCO2 ?? 0,
+    energy: score.categories.find((c) => c.category === 'energy')?.annualKgCO2 ?? 0,
+    shopping: score.categories.find((c) => c.category === 'shopping')?.annualKgCO2 ?? 0,
   };
 
   return {
@@ -73,10 +73,10 @@ export function runToggleActionCompleted(
   const trendPoint: TrendDataPoint = {
     date: new Date().toISOString(),
     totalKgCO2: score.totalAnnualKgCO2,
-    transport: score.categories[0]?.annualKgCO2 ?? 0,
-    diet: score.categories[1]?.annualKgCO2 ?? 0,
-    energy: score.categories[2]?.annualKgCO2 ?? 0,
-    shopping: score.categories[3]?.annualKgCO2 ?? 0,
+    transport: score.categories.find((c) => c.category === 'transport')?.annualKgCO2 ?? 0,
+    diet: score.categories.find((c) => c.category === 'diet')?.annualKgCO2 ?? 0,
+    energy: score.categories.find((c) => c.category === 'energy')?.annualKgCO2 ?? 0,
+    shopping: score.categories.find((c) => c.category === 'shopping')?.annualKgCO2 ?? 0,
   };
 
   return {

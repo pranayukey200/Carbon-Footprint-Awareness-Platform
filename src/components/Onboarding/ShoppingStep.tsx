@@ -42,21 +42,21 @@ export const ShoppingStep: React.FC = () => {
       {/* Monthly Spending */}
       <div className="input-group">
         <label htmlFor="monthlySpending" className="input-group__label">
-          Monthly spending (USD)
+          Monthly spending (INR, ₹)
         </label>
         <input
           id="monthlySpending"
           type="number"
           className="input"
           min={0}
-          max={5000}
-          value={shopping.monthlySpendingUsd}
+          max={500000}
+          value={shopping.monthlySpendingInr}
           onChange={(e) =>
             setShopping({
-              monthlySpendingUsd: sanitizeNumber(e.target.value, 0),
+              monthlySpendingInr: sanitizeNumber(e.target.value, 0),
             })
           }
-          aria-label="Monthly spending in USD"
+          aria-label="Monthly spending in INR"
         />
       </div>
 

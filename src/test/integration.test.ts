@@ -54,7 +54,7 @@ describe('Full User Flow Integration', () => {
 
     /** Step 5: Fill shopping profile */
     store.setShoppingProfile({
-      monthlySpendingUsd: 400,
+      monthlySpendingInr: 30000,
       fastFashionFrequency: 'rarely',
       electronicsPerYear: 1,
       recyclingRate: 40,

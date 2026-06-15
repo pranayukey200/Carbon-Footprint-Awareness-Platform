@@ -33,7 +33,7 @@ export const useSimulatorState = () => {
     gas: userProfile.energy.monthlyGasUsageTherms,
     renew: userProfile.energy.renewablePercentage,
     houseSize: userProfile.energy.householdSize,
-    spend: userProfile.shopping.monthlySpendingUsd,
+    spend: userProfile.shopping.monthlySpendingInr,
     fashion: userProfile.shopping.fastFashionFrequency,
     electronics: userProfile.shopping.electronicsPerYear,
     recycle: userProfile.shopping.recyclingRate,
@@ -64,7 +64,7 @@ export const useSimulatorState = () => {
         householdSize: simState.houseSize,
       },
       shopping: {
-        monthlySpendingUsd: simState.spend,
+        monthlySpendingInr: simState.spend,
         fastFashionFrequency: simState.fashion,
         electronicsPerYear: simState.electronics,
         recyclingRate: simState.recycle,

@@ -165,10 +165,10 @@ describe('calculateEnergyEmissions', () => {
       renewablePercentage: 0,
       householdSize: 1,
     };
-    // Electricity: 900 * 12 * 0.417 = 4503.6
+    // Electricity: 900 * 12 * 0.71 = 7668
     // Gas: 50 * 12 * 5.3 = 3180
-    // Total: 7683.6 / 1 = 7684
-    expect(calculateEnergyEmissions(profile)).toBe(7684);
+    // Total: (7668 + 3180) / 1 = 10848
+    expect(calculateEnergyEmissions(profile)).toBe(10848);
   });
 
   it('splits emissions per household member', () => {
@@ -178,8 +178,8 @@ describe('calculateEnergyEmissions', () => {
       renewablePercentage: 0,
       householdSize: 4,
     };
-    // 7683.6 / 4 = 1920.9 → 1921
-    expect(calculateEnergyEmissions(profile)).toBe(1921);
+    // 10848 / 4 = 2712
+    expect(calculateEnergyEmissions(profile)).toBe(2712);
   });
 
   it('reduces emissions with renewable energy', () => {
@@ -189,18 +189,21 @@ describe('calculateEnergyEmissions', () => {
       renewablePercentage: 50,
       householdSize: 1,
     };
-    // 7683.6 * 0.5 = 3841.8 → 3842
-    expect(calculateEnergyEmissions(profile)).toBe(3842);
+    // Electricity: 7668 * 0.5 = 3834
+    // Gas: 3180
+    // Total: 3834 + 3180 = 7014
+    expect(calculateEnergyEmissions(profile)).toBe(7014);
   });
 
-  it('returns zero for 100% renewable energy', () => {
+  it('returns gas emissions for 100% renewable energy', () => {
     const profile: EnergyProfile = {
       monthlyElectricityKwh: 900,
       monthlyGasUsageTherms: 50,
       renewablePercentage: 100,
       householdSize: 1,
     };
-    expect(calculateEnergyEmissions(profile)).toBe(0);
+    // Electricity offset to 0, Gas remains 3180
+    expect(calculateEnergyEmissions(profile)).toBe(3180);
   });
 
   it('handles household size of zero (defaults to 1)', () => {
@@ -220,29 +223,29 @@ describe('calculateEnergyEmissions', () => {
 describe('calculateShoppingEmissions', () => {
   it('calculates base shopping emissions', () => {
     const profile: ShoppingProfile = {
-      monthlySpendingUsd: 500,
+      monthlySpendingInr: 15000,
       fastFashionFrequency: 'sometimes',
       electronicsPerYear: 0,
       recyclingRate: 0,
     };
-    // 500 * 12 * 0.7 * 1.0 + 0 = 4200
-    expect(calculateShoppingEmissions(profile)).toBe(4200);
+    // 15000 * 12 * 0.0084 * 1.0 + 0 = 1512
+    expect(calculateShoppingEmissions(profile)).toBe(1512);
   });
 
   it('increases emissions for frequent fast fashion', () => {
     const profile: ShoppingProfile = {
-      monthlySpendingUsd: 500,
+      monthlySpendingInr: 15000,
       fastFashionFrequency: 'often',
       electronicsPerYear: 0,
       recyclingRate: 0,
     };
-    // 500 * 12 * 0.7 * 1.5 = 6300
-    expect(calculateShoppingEmissions(profile)).toBe(6300);
+    // 15000 * 12 * 0.0084 * 1.5 = 2268
+    expect(calculateShoppingEmissions(profile)).toBe(2268);
   });
 
   it('adds electronics emissions', () => {
     const profile: ShoppingProfile = {
-      monthlySpendingUsd: 0,
+      monthlySpendingInr: 0,
       fastFashionFrequency: 'sometimes',
       electronicsPerYear: 3,
       recyclingRate: 0,
@@ -253,13 +256,13 @@ describe('calculateShoppingEmissions', () => {
 
   it('reduces emissions with high recycling rate', () => {
     const profile: ShoppingProfile = {
-      monthlySpendingUsd: 500,
+      monthlySpendingInr: 15000,
       fastFashionFrequency: 'sometimes',
       electronicsPerYear: 0,
       recyclingRate: 100,
     };
-    // 4200 * (1 - 1.0 * 0.15) = 4200 * 0.85 = 3570
-    expect(calculateShoppingEmissions(profile)).toBe(3570);
+    // 1512 * (1 - 1.0 * 0.15) = 1512 * 0.85 = 1285.2 -> 1285
+    expect(calculateShoppingEmissions(profile)).toBe(1285);
   });
 });
 

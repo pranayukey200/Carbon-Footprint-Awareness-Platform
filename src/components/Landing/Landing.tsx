@@ -52,7 +52,7 @@ export const Landing: React.FC<LandingProps> = ({ onStartOnboarding }) => {
   }, [prefersReducedMotion]);
 
   return (
-    <div className="landing-hero" role="banner" aria-label="CarbonLens Landing Screen">
+    <div className="landing-hero" aria-label="CarbonLens Landing Screen">
       {/* Background drift particles */}
       {!prefersReducedMotion &&
         particles.map((p) => (

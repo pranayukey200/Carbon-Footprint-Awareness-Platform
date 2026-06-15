@@ -65,7 +65,6 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
   return (
     <div
       className="dashboard"
-      role="main"
       aria-label="Carbon footprint dashboard"
       style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}
     >

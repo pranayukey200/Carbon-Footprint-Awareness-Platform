@@ -74,7 +74,7 @@ export const ENERGY_AND_SHOPPING_SEEDS: readonly RecommendationSeed[] = [
     category: CategoryType.Shopping,
     potentialSavingKgCo2: 400,
     difficulty: Difficulty.Easy,
-    isRelevant: (p) => p.shopping.monthlySpendingUsd > 100,
+    isRelevant: (p) => p.shopping.monthlySpendingInr > 8000,
   },
   {
     id: 's2',
@@ -92,7 +92,7 @@ export const ENERGY_AND_SHOPPING_SEEDS: readonly RecommendationSeed[] = [
     category: CategoryType.Shopping,
     potentialSavingKgCo2: 250,
     difficulty: Difficulty.Medium,
-    isRelevant: (p) => p.shopping.monthlySpendingUsd > 200,
+    isRelevant: (p) => p.shopping.monthlySpendingInr > 16000,
   },
   {
     id: 's4',
@@ -110,7 +110,7 @@ export const ENERGY_AND_SHOPPING_SEEDS: readonly RecommendationSeed[] = [
     category: CategoryType.Shopping,
     potentialSavingKgCo2: 350,
     difficulty: Difficulty.Easy,
-    isRelevant: (p) => p.shopping.monthlySpendingUsd > 150,
+    isRelevant: (p) => p.shopping.monthlySpendingInr > 12000,
   },
   {
     id: 's6',
@@ -119,7 +119,7 @@ export const ENERGY_AND_SHOPPING_SEEDS: readonly RecommendationSeed[] = [
     category: CategoryType.Shopping,
     potentialSavingKgCo2: 500,
     difficulty: Difficulty.Medium,
-    isRelevant: (p) => p.shopping.monthlySpendingUsd > 100,
+    isRelevant: (p) => p.shopping.monthlySpendingInr > 8000,
   },
   {
     id: 's7',
