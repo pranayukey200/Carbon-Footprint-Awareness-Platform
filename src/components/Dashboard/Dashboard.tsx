@@ -1,45 +1,102 @@
-import type { ReactNode } from 'react';
+/**
+ * @fileoverview Main dashboard view showing score gauges, charts, equivalencies, and weekly insights.
+ * @module components/Dashboard/Dashboard
+ */
+
+import React, { useMemo } from 'react';
 import { useCarbonStore } from '../../store/carbonStore';
 import { CarbonScore } from './CarbonScore';
 import { CategoryBreakdown } from './CategoryBreakdown';
 import { TrendChart } from './TrendChart';
 import { Card } from '../shared/Card';
+import { EquivalencyCard } from './EquivalencyCard';
+import { GridScheduler } from './GridScheduler';
 
-export function Dashboard(): ReactNode {
+interface DashboardProps {
+  readonly onNavigate: (view: 'dashboard' | 'simulator' | 'actions' | 'progress' | 'comparison') => void;
+}
+
+/**
+ * Main application dashboard showing carbon footprints, comparative trends, and localized insights.
+ *
+ * @returns The rendered dashboard page.
+ */
+export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
   const carbonScore = useCarbonStore((s) => s.carbonScore);
-  const scoreValue = carbonScore ? carbonScore.totalAnnualKgCO2 : 0;
+  const progressLog = useCarbonStore((s) => s.progressLog);
+  const resetProfile = useCarbonStore((s) => s.resetProfile);
 
-  // Calculations for Equivalency Metrics
-  const treesPlanted = Math.round(scoreValue / 22);
-  const milesDriven = Math.round(scoreValue / 0.4);
-  const phoneCharges = Math.round(scoreValue / 0.008);
+  const totalSaved = useMemo(() => {
+    return progressLog.reduce((sum, e) => sum + e.kgCO2Saved, 0);
+  }, [progressLog]);
 
-  // Grid Intensity calculation based on local time
-  const currentHour = new Date().getHours();
-  let gridStatus = 'Moderate';
-  let gridColor = 'var(--color-warning)';
-  let recommendation = 'Run heavy appliances later in the evening or tomorrow morning.';
+  const scoreValue = useMemo(() => {
+    return carbonScore ? Math.max(0, carbonScore.totalAnnualKgCO2 - totalSaved) : 0;
+  }, [carbonScore, totalSaved]);
 
-  if (currentHour >= 10 && currentHour <= 15) {
-    gridStatus = 'Clean (Low Carbon)';
-    gridColor = 'var(--color-excellent)';
-    recommendation = 'Perfect time to charge your EV, run the washer, or cook!';
-  } else if (currentHour >= 18 && currentHour <= 22) {
-    gridStatus = 'Dirty (High Peak)';
-    gridColor = 'var(--color-error)';
-    recommendation = 'Avoid running heavy appliances. Grid is using fossil fuels.';
-  } else {
-    gridStatus = 'Optimal (Base Load)';
-    gridColor = 'var(--color-excellent)';
-    recommendation = 'Grid emissions are stable. Normal usage is fine.';
-  }
+  // Compute Weekly Insight based on largest emission category
+  const weeklyInsight = useMemo(() => {
+    if (!carbonScore || carbonScore.categories.length === 0) {
+      return 'Complete onboarding to receive your weekly eco insight!';
+    }
+    const sorted = [...carbonScore.categories].sort((a, b) => b.annualKgCO2 - a.annualKgCO2);
+    const topCat = sorted[0]?.category;
+
+    switch (topCat) {
+      case 'transport':
+        return '✈️ Commuting and flights are your largest emission source this week. Swapping short drives for cycling or walking is your best reduction opportunity.';
+      case 'diet':
+        return '🥗 Diet represents your biggest carbon footprint. Choosing vegan meals or sourcing local produce will cut your emissions significantly.';
+      case 'energy':
+        return '⚡ Home energy is your leading emission source. Switching to a clean energy tariff or replacing bulbs with LEDs offers the fastest savings.';
+      case 'shopping':
+        return '🛒 Shopping and consumption dominate your carbon score. Opting for refurbished devices and thrifting garments will make the most impact.';
+      default:
+        return 'Keep logging actions to cut your footprint and improve your day streak!';
+    }
+  }, [carbonScore]);
+
+  const handleReset = () => {
+    if (
+      confirm(
+        'Are you sure you want to reset your profile and restart the onboarding questionnaire? All logged progress will be cleared.',
+      )
+    ) {
+      resetProfile();
+      window.location.reload();
+    }
+  };
 
   return (
-    <div className="dashboard" role="main" aria-label="Carbon footprint dashboard" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
-      <header className="dashboard__header">
-        <h1 className="dashboard__title">Your Dashboard</h1>
-        <p className="dashboard__subtitle">Track, understand, and reduce your carbon footprint</p>
+    <div
+      className="dashboard"
+      role="main"
+      aria-label="Carbon footprint dashboard"
+      style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}
+    >
+      <header
+        className="dashboard__header"
+        style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 'var(--space-4)' }}
+      >
+        <div>
+          <h1 className="dashboard__title">Your Dashboard</h1>
+          <p className="dashboard__subtitle">Track, understand, and reduce your carbon footprint</p>
+        </div>
+        <button
+          className="btn btn--secondary"
+          onClick={handleReset}
+          style={{ padding: 'var(--space-2) var(--space-4)', fontSize: 'var(--font-size-sm)' }}
+          aria-label="Restart onboarding questionnaire"
+        >
+          🔄 Restart Onboarding
+        </button>
       </header>
+
+      {/* Weekly Insight Alert Banner */}
+      <Card style={{ padding: 'var(--space-4)', background: 'rgba(29, 158, 117, 0.1)', border: '1px solid var(--color-accent-primary)' }}>
+        <h3 style={{ margin: '0 0 var(--space-1) 0', fontSize: 'var(--font-size-base)', color: 'var(--color-accent-primary)' }}>💡 Weekly Insight</h3>
+        <p style={{ margin: 0, fontSize: 'var(--font-size-sm)', lineHeight: 'var(--line-height-relaxed)' }}>{weeklyInsight}</p>
+      </Card>
 
       <div className="dashboard__grid">
         <div className="dashboard__full-width">
@@ -49,77 +106,26 @@ export function Dashboard(): ReactNode {
         <TrendChart />
       </div>
 
-      {/* Standout & Retention Features */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 'var(--space-4)' }}>
-        {/* Equivalency Metrics */}
-        <Card aria-label="Carbon equivalency metrics" style={{ padding: 'var(--space-4)' }}>
-          <h3 style={{ margin: '0 0 var(--space-3) 0', fontSize: 'var(--font-size-lg)' }}>🌿 Impact Equivalency</h3>
-          <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)', marginBottom: 'var(--space-4)' }}>
-            Your annual carbon footprint ({scoreValue.toLocaleString()} kg CO₂) is equivalent to:
-          </p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-              <span style={{ fontSize: '2rem' }}>🌳</span>
-              <div>
-                <h4 style={{ margin: 0, fontSize: 'var(--font-size-base)' }}>{treesPlanted.toLocaleString()} Trees</h4>
-                <p style={{ margin: 0, fontSize: 'var(--font-size-xs)', color: 'var(--color-text-secondary)' }}>Planted and growing for 10 years to offset</p>
-              </div>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-              <span style={{ fontSize: '2rem' }}>🚗</span>
-              <div>
-                <h4 style={{ margin: 0, fontSize: 'var(--font-size-base)' }}>{milesDriven.toLocaleString()} Miles</h4>
-                <p style={{ margin: 0, fontSize: 'var(--font-size-xs)', color: 'var(--color-text-secondary)' }}>Driven by a standard gasoline-powered car</p>
-              </div>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-              <span style={{ fontSize: '2rem' }}>📱</span>
-              <div>
-                <h4 style={{ margin: 0, fontSize: 'var(--font-size-base)' }}>{phoneCharges.toLocaleString()} Charges</h4>
-                <p style={{ margin: 0, fontSize: 'var(--font-size-xs)', color: 'var(--color-text-secondary)' }}>Smartphones charged fully from empty</p>
-              </div>
-            </div>
+        <EquivalencyCard scoreValue={scoreValue} />
+        <GridScheduler />
+        <Card
+          aria-label="Interactive Footprint Simulator Card"
+          style={{ padding: 'var(--space-4)', display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', justifyContent: 'space-between' }}
+        >
+          <div>
+            <h3 style={{ margin: '0 0 var(--space-2) 0', fontSize: 'var(--font-size-lg)' }}>🔬 Interactive Simulator</h3>
+            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)', lineHeight: 'var(--line-height-relaxed)', marginBottom: 'var(--space-4)' }}>
+              Simulate changes to your lifestyle (commute distance, diet, clean energy, recycling) and witness the real-time visual evolution of your virtual planet.
+            </p>
           </div>
-        </Card>
-
-        {/* Dynamic Grid Intensity */}
-        <Card aria-label="Dynamic Grid Intensity Scheduler" style={{ padding: 'var(--space-4)' }}>
-          <h3 style={{ margin: '0 0 var(--space-3) 0', fontSize: 'var(--font-size-lg)' }}>⚡ Grid Intensity Scheduler</h3>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-3)' }}>
-            <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)' }}>Current Grid State:</span>
-            <span 
-              style={{
-                fontSize: 'var(--font-size-xs)',
-                fontWeight: 'var(--font-weight-bold)',
-                padding: 'var(--space-1) var(--space-3)',
-                borderRadius: 'var(--radius-full)',
-                background: gridColor,
-                color: 'var(--color-text-inverse)'
-              }}
-            >
-              {gridStatus}
-            </span>
-          </div>
-          <p style={{ fontSize: 'var(--font-size-sm)', margin: '0 0 var(--space-4) 0', lineHeight: 'var(--line-height-relaxed)' }}>
-            {recommendation}
-          </p>
-          <h4 style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginBottom: 'var(--space-2)' }}>Grid Cleanliness Outlook Today:</h4>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 'var(--font-size-xs)' }}>
-              <span>🌅 Morning (6am - 10am)</span>
-              <span style={{ color: 'var(--color-warning)' }}>Moderate</span>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 'var(--font-size-xs)' }}>
-              <span>☀️ Mid-day (10am - 3pm)</span>
-              <span style={{ color: 'var(--color-excellent)', fontWeight: 'bold' }}>Clean (Solar peak)</span>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 'var(--font-size-xs)' }}>
-              <span>🌇 Evening (6pm - 10pm)</span>
-              <span style={{ color: 'var(--color-error)' }}>Dirty (Peak demand)</span>
-            </div>
-          </div>
+          <button className="btn btn--primary btn--full" onClick={() => onNavigate('simulator')} style={{ padding: '10px' }}>
+            Launch Simulator 🚀
+          </button>
         </Card>
       </div>
     </div>
   );
-}
+};
+
+export default Dashboard;

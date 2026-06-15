@@ -25,8 +25,7 @@ export function saveState<T>(key: string, data: T): boolean {
     const serialized = JSON.stringify(data);
     window.localStorage.setItem(key, serialized);
     return true;
-  } catch (error) {
-    console.error(`[Storage] Failed to save key "${key}":`, error);
+  } catch {
     return false;
   }
 }
@@ -43,8 +42,7 @@ export function loadState<T>(key: string): T | null {
       return null;
     }
     return JSON.parse(serialized) as T;
-  } catch (error) {
-    console.error(`[Storage] Failed to load key "${key}":`, error);
+  } catch {
     return null;
   }
 }
@@ -56,8 +54,8 @@ export function loadState<T>(key: string): T | null {
 export function clearState(key: string): void {
   try {
     window.localStorage.removeItem(key);
-  } catch (error) {
-    console.error(`[Storage] Failed to clear key "${key}":`, error);
+  } catch {
+    // Silent fail
   }
 }
 

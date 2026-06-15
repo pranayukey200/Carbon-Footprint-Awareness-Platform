@@ -10,7 +10,7 @@ import { useCallback } from 'react';
 /* ─── Types ─────────────────────────────────────────────────────────── */
 
 /** Views the header can navigate to */
-type View = 'dashboard' | 'actions' | 'progress' | 'comparison';
+type View = 'dashboard' | 'simulator' | 'actions' | 'progress' | 'comparison';
 
 /** Props for the {@link Header} component */
 interface HeaderProps {
@@ -28,10 +28,11 @@ interface NavItem {
 
 /** Ordered list of navigation destinations */
 const NAV_ITEMS: readonly NavItem[] = [
-  { id: 'dashboard', label: 'Dashboard' },
-  { id: 'actions', label: 'Actions' },
-  { id: 'progress', label: 'Progress' },
-  { id: 'comparison', label: 'Comparison' },
+  { id: 'dashboard', label: '🏠 Dashboard' },
+  { id: 'simulator', label: '🔬 Simulator' },
+  { id: 'actions', label: '⚡ Actions' },
+  { id: 'progress', label: '📈 Progress' },
+  { id: 'comparison', label: '📊 Comparison' },
 ] as const;
 
 /* ─── Component ─────────────────────────────────────────────────────── */
@@ -61,8 +62,21 @@ export function Header({ currentView, onViewChange }: HeaderProps): React.JSX.El
 
   return (
     <header className="header" role="banner">
-      <div className="header__brand">
-        <span className="header__logo" aria-hidden="true">
+      <div
+        className="header__logo"
+        role="button"
+        tabIndex={0}
+        onClick={() => onViewChange('dashboard')}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onViewChange('dashboard');
+          }
+        }}
+        style={{ cursor: 'pointer' }}
+        aria-label="CarbonLens Logo, Go to Home Page"
+      >
+        <span className="header__logo-icon" aria-hidden="true">
           🌿
         </span>
         <span className="header__title">CarbonLens</span>

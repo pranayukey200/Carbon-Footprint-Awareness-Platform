@@ -1,39 +1,15 @@
+/**
+ * @fileoverview Onboarding step for gathering transportation habits.
+ * @module components/Onboarding/TransportStep
+ */
+
 import React from 'react';
-import { TransportMode, FuelType } from '../../types';
 import { useCarbonStore } from '../../store/carbonStore';
 import { sanitizeNumber } from '../../utils/sanitize';
-
-interface TransportOption {
-  readonly value: TransportMode;
-  readonly label: string;
-  readonly icon: string;
-}
-
-/** Transport mode options with icons */
-const TRANSPORT_OPTIONS: readonly TransportOption[] = [
-  { value: TransportMode.Car, label: 'Car', icon: '🚗' },
-  { value: TransportMode.PublicTransit, label: 'Public Transit', icon: '🚌' },
-  { value: TransportMode.Bicycle, label: 'Bicycle', icon: '🚲' },
-  { value: TransportMode.Walking, label: 'Walking', icon: '🚶' },
-  { value: TransportMode.Motorcycle, label: 'Motorcycle', icon: '🏍️' },
-  { value: TransportMode.ElectricCar, label: 'Electric Car', icon: '⚡' },
-];
-
-/** Fuel type options */
-const FUEL_OPTIONS: readonly { value: FuelType; label: string }[] = [
-  { value: FuelType.Gasoline, label: 'Gasoline' },
-  { value: FuelType.Diesel, label: 'Diesel' },
-  { value: FuelType.Hybrid, label: 'Hybrid' },
-  { value: FuelType.Electric, label: 'Electric' },
-];
-
-/** Modes that require a fuel-type selector */
-const FUEL_MODES = new Set<TransportMode>([TransportMode.Car, TransportMode.Motorcycle]);
+import { TRANSPORT_OPTIONS, FUEL_OPTIONS, FUEL_MODES } from '../../constants/onboardingOptions';
 
 /**
- * Onboarding step for gathering transportation habits.
- * Renders radio cards for mode selection, an optional fuel-type picker,
- * a distance slider, and flight inputs.
+ * Onboarding step for transport habits.
  *
  * @returns Transport step form element
  */
@@ -80,10 +56,7 @@ export const TransportStep: React.FC = () => {
             {FUEL_OPTIONS.map(({ value, label }) => {
               const isSelected = transport.fuelType === value;
               return (
-                <label
-                  key={value}
-                  className={`radio-card${isSelected ? ' radio-card--selected' : ''}`}
-                >
+                <label key={value} className={`radio-card${isSelected ? ' radio-card--selected' : ''}`}>
                   <input
                     type="radio"
                     name="fuelType"
@@ -132,11 +105,7 @@ export const TransportStep: React.FC = () => {
           min={0}
           max={20}
           value={transport.flightsPerYear}
-          onChange={(e) =>
-            setTransport({
-              flightsPerYear: sanitizeNumber(e.target.value, 0),
-            })
-          }
+          onChange={(e) => setTransport({ flightsPerYear: sanitizeNumber(e.target.value, 0) })}
           aria-label="Flights per year"
         />
       </div>
@@ -153,11 +122,7 @@ export const TransportStep: React.FC = () => {
           max={12}
           step={1}
           value={transport.averageFlightHours}
-          onChange={(e) =>
-            setTransport({
-              averageFlightHours: sanitizeNumber(e.target.value, 1),
-            })
-          }
+          onChange={(e) => setTransport({ averageFlightHours: sanitizeNumber(e.target.value, 1) })}
           aria-label={`Average flight hours: ${transport.averageFlightHours}`}
           aria-valuemin={1}
           aria-valuemax={12}

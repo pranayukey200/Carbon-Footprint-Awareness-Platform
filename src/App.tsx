@@ -21,6 +21,9 @@ const Landing = lazy(() =>
 const Dashboard = lazy(() =>
   import('./components/Dashboard/Dashboard').then((m) => ({ default: m.Dashboard })),
 );
+const SimulatorView = lazy(() =>
+  import('./components/Simulator/SimulatorView').then((m) => ({ default: m.SimulatorView })),
+);
 const ActionList = lazy(() =>
   import('./components/Actions/ActionList').then((m) => ({ default: m.ActionList })),
 );
@@ -32,7 +35,7 @@ const ComparisonView = lazy(() =>
 );
 
 /** Available main application views */
-type AppView = 'dashboard' | 'actions' | 'progress' | 'comparison';
+type AppView = 'dashboard' | 'simulator' | 'actions' | 'progress' | 'comparison';
 
 /** Loading fallback component */
 function LoadingFallback(): React.JSX.Element {
@@ -61,9 +64,10 @@ export function App(): React.JSX.Element {
     setShowWizard(true);
   }, []);
 
-  /** Renders the current view based on navigation state */
   const renderView = (): React.JSX.Element => {
     switch (currentView) {
+      case 'simulator':
+        return <SimulatorView />;
       case 'actions':
         return <ActionList />;
       case 'progress':
@@ -72,7 +76,7 @@ export function App(): React.JSX.Element {
         return <ComparisonView />;
       case 'dashboard':
       default:
-        return <Dashboard />;
+        return <Dashboard onNavigate={handleViewChange} />;
     }
   };
 

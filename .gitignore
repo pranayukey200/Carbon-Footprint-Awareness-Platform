@@ -22,4 +22,10 @@ coverage
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?
+# Environment variables
+.env
+.env.*
+*.env
+
+# Firebase cache
+.firebase/

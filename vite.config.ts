@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  base: '/Carbon-Footprint-Awareness-Platform/',
+  base: '/',
   build: {
     target: 'es2020',
     minify: true,

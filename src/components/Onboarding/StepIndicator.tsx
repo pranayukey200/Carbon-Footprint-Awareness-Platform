@@ -10,6 +10,7 @@ import { OnboardingStep } from '../../types';
 
 /** Labels displayed beneath each step dot */
 const STEP_LABELS: readonly string[] = [
+  'Personal',
   'Transport',
   'Diet',
   'Energy',
@@ -21,7 +22,7 @@ const STEP_LABELS: readonly string[] = [
 interface StepIndicatorProps {
   /** Currently active onboarding step */
   readonly currentStep: OnboardingStep;
-  /** Total number of steps to display (defaults to 5) */
+  /** Total number of steps to display (defaults to 6) */
   readonly totalSteps?: number;
 }
 
@@ -33,7 +34,7 @@ interface StepIndicatorProps {
  * @param props - {@link StepIndicatorProps}
  * @returns Accessible step indicator element
  */
-export const StepIndicator: React.FC<StepIndicatorProps> = ({ currentStep, totalSteps = 5 }) => {
+export const StepIndicator: React.FC<StepIndicatorProps> = ({ currentStep, totalSteps = 6 }) => {
   /**
    * Returns the BEM modifier class for a given step index.
    * @param index - Zero-based step index
