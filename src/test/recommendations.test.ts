@@ -33,13 +33,15 @@ describe('generateRecommendations', () => {
 
   it('actions are sorted by impact (highest first)', () => {
     const result = generateRecommendations(DEFAULT_PROFILE, defaultScore);
+    const dominantCategory = [...defaultScore.categories].sort((a, b) => b.annualKgCO2 - a.annualKgCO2)[0]?.category;
+
     for (let i = 1; i < result.length; i++) {
       const prev = result[i - 1];
       const current = result[i];
       if (prev && current) {
-        // Since sorting is by weighted score, we can't strictly compare
-        // potentialSavingKgCO2, but the first few should be high-impact
-        expect(prev.potentialSavingKgCO2).toBeGreaterThanOrEqual(0);
+        const prevBoost = prev.category === dominantCategory ? 1.5 : 1;
+        const currBoost = current.category === dominantCategory ? 1.5 : 1;
+        expect(prev.potentialSavingKgCO2 * prevBoost).toBeGreaterThanOrEqual(current.potentialSavingKgCO2 * currBoost);
       }
     }
   });
@@ -54,7 +56,7 @@ describe('generateRecommendations', () => {
     };
     const score = calculateTotalFootprint(transitProfile);
     const result = generateRecommendations(transitProfile, score);
-    const hasTransitSwitch = result.some((a) => a.id === 'tr-01');
+    const hasTransitSwitch = result.some((a) => a.id === 't1');
     expect(hasTransitSwitch).toBe(false);
   });
 
@@ -68,7 +70,7 @@ describe('generateRecommendations', () => {
     };
     const score = calculateTotalFootprint(veganProfile);
     const result = generateRecommendations(veganProfile, score);
-    const hasVeganSwitch = result.some((a) => a.id === 'dt-05');
+    const hasVeganSwitch = result.some((a) => a.id === 'd3');
     expect(hasVeganSwitch).toBe(false);
   });
 

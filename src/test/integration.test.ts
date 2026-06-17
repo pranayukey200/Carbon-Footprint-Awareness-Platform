@@ -23,9 +23,16 @@ describe('Full User Flow Integration', () => {
     /** Step 1: Verify initial state */
     expect(store.isOnboarded).toBe(false);
     expect(store.carbonScore).toBeNull();
-    expect(store.currentStep).toBe(OnboardingStep.Transport);
+    expect(store.currentStep).toBe(OnboardingStep.Personal);
 
-    /** Step 2: Fill transport profile */
+    /** Step 2: Fill personal profile */
+    store.setUserProfile({
+      name: 'Pranay',
+      emailHash: 'ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f',
+    });
+    store.setCurrentStep(OnboardingStep.Transport);
+
+    /** Step 3: Fill transport profile */
     store.setTransportProfile({
       primaryMode: TransportMode.Car,
       fuelType: FuelType.Gasoline,

@@ -58,12 +58,16 @@ export const BillIngestCard: React.FC<BillIngestCardProps> = ({ setEnergyProfile
         setTimeout(() => processResult(Math.abs((hash % 800) + 150), Math.abs(((hash * 7) % 60) + 10)), 1000);
       };
 
-      const nameValues = extractValues(fileName);
-      const elecVal = nameValues.electricity, gasVal = nameValues.gas;
-      if (elecVal !== null && gasVal !== null && !isNaN(elecVal) && !isNaN(gasVal)) {
-        setTimeout(() => processResult(elecVal, gasVal), 1000);
-        return;
-      }
+      const processFilenameOrHash = () => {
+        const nameValues = extractValues(fileName);
+        const nameElec = nameValues.electricity;
+        const nameGas = nameValues.gas;
+        if (nameElec !== null && nameGas !== null && !isNaN(nameElec) && !isNaN(nameGas)) {
+          setTimeout(() => processResult(nameElec, nameGas), 1000);
+        } else {
+          fallbackHash();
+        }
+      };
 
       const isText = file.type.startsWith('text/') || fileName.endsWith('.txt') || fileName.endsWith('.csv') || fileName.endsWith('.json');
       if (isText) {
@@ -71,19 +75,18 @@ export const BillIngestCard: React.FC<BillIngestCardProps> = ({ setEnergyProfile
         reader.onload = (event) => {
           const text = event.target?.result as string;
           const contentValues = extractValues(text);
-          let elec = contentValues.electricity ?? 450, gas = contentValues.gas ?? 22;
-          if (isNaN(elec) || elec <= 0) {
-            elec = (Array.from(fileName).reduce((s, c) => s + c.charCodeAt(0), 0) + fileSize) % 800 + 100;
+          const cElec = contentValues.electricity;
+          const cGas = contentValues.gas;
+          if (cElec !== null && cGas !== null && !isNaN(cElec) && !isNaN(cGas)) {
+            setTimeout(() => processResult(cElec, cGas), 1000);
+          } else {
+            processFilenameOrHash();
           }
-          if (isNaN(gas) || gas <= 0) {
-            gas = (Array.from(fileName).reduce((s, c) => s + c.charCodeAt(0), 0) * fileSize) % 80 + 10;
-          }
-          setTimeout(() => processResult(elec, gas), 1000);
         };
-        reader.onerror = () => fallbackHash();
+        reader.onerror = () => processFilenameOrHash();
         reader.readAsText(file);
       } else {
-        fallbackHash();
+        processFilenameOrHash();
       }
     },
     [setEnergyProfile, calculateScore],

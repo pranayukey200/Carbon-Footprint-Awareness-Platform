@@ -28,7 +28,7 @@ export const EcoAssistant: React.FC = () => {
   const [input, setInput] = useState('');
   const [showSettings, setShowSettings] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [geminiKey, setGeminiKey] = useState(() => localStorage.getItem('ecoLens_gemini_key') || '');
+  const [geminiKey, setGeminiKey] = useState(() => sessionStorage.getItem('ecoLens_gemini_key') || '');
   const [messages, setMessages] = useState<readonly Message[]>([
     { id: 'g', sender: 'assistant', text: GREETING, timestamp: new Date().toLocaleTimeString() },
   ]);
@@ -86,7 +86,8 @@ export const EcoAssistant: React.FC = () => {
           {showSettings && (
             <div style={{ padding: 'var(--space-3)', borderBottom: '1px solid var(--color-border)', background: 'var(--color-bg-secondary)' }}>
               <label htmlFor="gemini-key-input" style={{ display: 'block', fontSize: 'var(--font-size-xs)', marginBottom: 'var(--space-1)', fontWeight: 'bold' }}>🔑 Gemini API Key:</label>
-              <input id="gemini-key-input" type="password" className="input" placeholder="Enter Gemini API key" value={geminiKey} onChange={(e) => { setGeminiKey(e.target.value); localStorage.setItem('ecoLens_gemini_key', e.target.value); }} style={{ width: '100%', fontSize: 'var(--font-size-xs)', padding: 'var(--space-2)' }} />
+              <input id="gemini-key-input" type="password" className="input" placeholder="Enter Gemini API key" value={geminiKey} onChange={(e) => { setGeminiKey(e.target.value); sessionStorage.setItem('ecoLens_gemini_key', e.target.value); }} style={{ width: '100%', fontSize: 'var(--font-size-xs)', padding: 'var(--space-2)' }} />
+              <span style={{ display: 'block', fontSize: '9px', color: 'var(--color-text-secondary)', marginTop: '2px' }}>*Stored only in this browser session (sessionStorage)</span>
             </div>
           )}
           <div className="assistant-panel__chat">
