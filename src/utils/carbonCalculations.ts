@@ -1,10 +1,7 @@
 /**
  * [Evaluation Focus: Problem Statement Alignment] - HIGH IMPACT
  * Implements precise mathematical logic for calculating annual carbon emissions (CO₂e)
- * across four distinct categories (Transport, Diet, Energy, Shopping) using standard scientific values (EPA, DEFRA, IPCC).
- *
- * [Evaluation Focus: Efficiency] - LOW IMPACT
- * Structured with O(1) direct record map lookups for factors, minimizing compute latency during real-time simulator interactions.
+ * across four distinct categories (Transport, Diet, Energy, Shopping) using standard scientific values.
  */
 
 import {
@@ -49,17 +46,12 @@ export function calculateTransportEmissions(profile: TransportProfile): number {
     } else if (profile.fuelType === FuelType.Electric) {
       factor = 0.05;
     } else {
-      factor = 0.21; // Gasoline
+      factor = 0.21;
     }
   }
-
-  const commuteAnnualKm = profile.weeklyDistanceKm * WEEKS_PER_YEAR;
-  const commuteEmissions = commuteAnnualKm * factor;
-
-  // Flights: flightsPerYear * averageFlightHours * 250 kg/hour
-  const flightEmissions = profile.flightsPerYear * profile.averageFlightHours * 250;
-
-  return Math.round(commuteEmissions + flightEmissions);
+  const commute = profile.weeklyDistanceKm * WEEKS_PER_YEAR * factor;
+  const flight = profile.flightsPerYear * profile.averageFlightHours * 250;
+  return Math.round(commute + flight);
 }
 
 /**
@@ -69,24 +61,22 @@ export function calculateTransportEmissions(profile: TransportProfile): number {
  */
 export function calculateDietEmissions(profile: DietProfile): number {
   const base = DIET_ANNUAL_KG[profile.dietType];
-  const localReduction = (profile.localFoodPercentage / 100) * 0.1;
-  const wasteIncrease = (profile.foodWastePercentage / 100) * 0.25;
-  return Math.round(base * (1 - localReduction + wasteIncrease));
+  const local = (profile.localFoodPercentage / 100) * 0.1;
+  const waste = (profile.foodWastePercentage / 100) * 0.25;
+  return Math.round(base * (1 - local + waste));
 }
 
 /**
  * Calculate annual household energy emissions.
- * Splits by electricity grid mix and natural gas usage.
  * @param profile - Energy household inputs.
- * @returns Annual kg CO₂e from home energy, divided by household size.
+ * @returns Annual kg CO₂e from home energy.
  */
 export function calculateEnergyEmissions(profile: EnergyProfile): number {
   const renewableFactor = 1 - profile.renewablePercentage / 100;
-  const electricityAnnual = profile.monthlyElectricityKwh * MONTHS_PER_YEAR * KG_CO2_PER_KWH * renewableFactor;
-  const gasAnnual = profile.monthlyGasUsageTherms * MONTHS_PER_YEAR * KG_CO2_PER_THERM;
-  const total = electricityAnnual + gasAnnual;
-  const household = profile.householdSize <= 0 ? 1 : profile.householdSize;
-  return Math.round(total / household);
+  const electricity = profile.monthlyElectricityKwh * MONTHS_PER_YEAR * KG_CO2_PER_KWH * renewableFactor;
+  const gas = profile.monthlyGasUsageTherms * MONTHS_PER_YEAR * KG_CO2_PER_THERM;
+  const size = profile.householdSize <= 0 ? 1 : profile.householdSize;
+  return Math.round((electricity + gas) / size);
 }
 
 /**
@@ -95,16 +85,10 @@ export function calculateEnergyEmissions(profile: EnergyProfile): number {
  * @returns Annual kg CO₂e from consumer spending.
  */
 export function calculateShoppingEmissions(profile: ShoppingProfile): number {
-  const fashionMultipliers = { never: 0.5, rarely: 0.8, sometimes: 1.0, often: 1.5 } as const;
-  const fashionMultiplier = fashionMultipliers[profile.fastFashionFrequency] ?? 1.0;
-
-  const baseSpendingEmissions =
-    profile.monthlySpendingInr * MONTHS_PER_YEAR * KG_CO2_PER_INR * fashionMultiplier;
-  const electronicsEmissions = profile.electronicsPerYear * 300;
-  const totalEmissions = baseSpendingEmissions + electronicsEmissions;
-
-  const recyclingReduction = 1 - (profile.recyclingRate / 100) * 0.15;
-  return Math.round(totalEmissions * recyclingReduction);
+  const multipliers = { never: 0.5, rarely: 0.8, sometimes: 1.0, often: 1.5 } as const;
+  const mult = multipliers[profile.fastFashionFrequency] ?? 1.0;
+  const base = profile.monthlySpendingInr * MONTHS_PER_YEAR * KG_CO2_PER_INR * mult + profile.electronicsPerYear * 300;
+  return Math.round(base * (1 - (profile.recyclingRate / 100) * 0.15));
 }
 
 /**
@@ -125,14 +109,13 @@ export function getGlobalComparison(totalKg: number): GlobalComparison {
 /**
  * Compute the full carbon score for a user profile.
  * @param profile - Complete user lifestyle profile.
- * @returns Full carbon score with category breakdown and global comparison.
+ * @returns Full carbon score.
  */
 export function calculateTotalFootprint(profile: UserProfile): CarbonScore {
   const transportKg = calculateTransportEmissions(profile.transport);
   const dietKg = calculateDietEmissions(profile.diet);
   const energyKg = calculateEnergyEmissions(profile.energy);
   const shoppingKg = calculateShoppingEmissions(profile.shopping);
-
   const totalAnnualKgCO2 = transportKg + dietKg + energyKg + shoppingKg;
 
   const transportPct = totalAnnualKgCO2 > 0 ? Math.round((transportKg / totalAnnualKgCO2) * 100) : 0;
@@ -140,10 +123,7 @@ export function calculateTotalFootprint(profile: UserProfile): CarbonScore {
   const energyPct = totalAnnualKgCO2 > 0 ? Math.round((energyKg / totalAnnualKgCO2) * 100) : 0;
   const shoppingPct = totalAnnualKgCO2 > 0 ? Math.round((shoppingKg / totalAnnualKgCO2) * 100) : 0;
 
-  let finalTransportPct = transportPct;
-  let finalDietPct = dietPct;
-  let finalEnergyPct = energyPct;
-  let finalShoppingPct = shoppingPct;
+  let finalTransportPct = transportPct, finalDietPct = dietPct, finalEnergyPct = energyPct, finalShoppingPct = shoppingPct;
 
   if (totalAnnualKgCO2 > 0) {
     const sum = transportPct + dietPct + energyPct + shoppingPct;
@@ -158,60 +138,28 @@ export function calculateTotalFootprint(profile: UserProfile): CarbonScore {
       let maxCat = pcts[0];
       if (maxCat) {
         for (const c of pcts) {
-          if (c.val > maxCat.val) {
-            maxCat = c;
-          }
+          if (c.val > maxCat.val) {maxCat = c;}
         }
         maxCat.set(maxCat.val + diff);
       }
     }
   }
 
-  const categories: CategoryScore[] = [
-    {
-      category: CategoryType.Transport,
-      annualKgCO2: transportKg,
-      percentageOfTotal: finalTransportPct,
-      comparisonToAverage: Math.round(
-        ((transportKg - CATEGORY_AVERAGES[CategoryType.Transport]) /
-          CATEGORY_AVERAGES[CategoryType.Transport]) *
-          100,
-      ),
-    },
-    {
-      category: CategoryType.Diet,
-      annualKgCO2: dietKg,
-      percentageOfTotal: finalDietPct,
-      comparisonToAverage: Math.round(
-        ((dietKg - CATEGORY_AVERAGES[CategoryType.Diet]) / CATEGORY_AVERAGES[CategoryType.Diet]) *
-          100,
-      ),
-    },
-    {
-      category: CategoryType.Energy,
-      annualKgCO2: energyKg,
-      percentageOfTotal: finalEnergyPct,
-      comparisonToAverage: Math.round(
-        ((energyKg - CATEGORY_AVERAGES[CategoryType.Energy]) /
-          CATEGORY_AVERAGES[CategoryType.Energy]) *
-          100,
-      ),
-    },
-    {
-      category: CategoryType.Shopping,
-      annualKgCO2: shoppingKg,
-      percentageOfTotal: finalShoppingPct,
-      comparisonToAverage: Math.round(
-        ((shoppingKg - CATEGORY_AVERAGES[CategoryType.Shopping]) /
-          CATEGORY_AVERAGES[CategoryType.Shopping]) *
-          100,
-      ),
-    },
-  ];
+  const makeCat = (type: CategoryType, kg: number, pct: number): CategoryScore => ({
+    category: type,
+    annualKgCO2: kg,
+    percentageOfTotal: pct,
+    comparisonToAverage: Math.round(((kg - CATEGORY_AVERAGES[type]) / CATEGORY_AVERAGES[type]) * 100),
+  });
 
   return {
     totalAnnualKgCO2,
-    categories,
+    categories: [
+      makeCat(CategoryType.Transport, transportKg, finalTransportPct),
+      makeCat(CategoryType.Diet, dietKg, finalDietPct),
+      makeCat(CategoryType.Energy, energyKg, finalEnergyPct),
+      makeCat(CategoryType.Shopping, shoppingKg, finalShoppingPct),
+    ],
     globalComparison: getGlobalComparison(totalAnnualKgCO2),
     calculatedAt: new Date().toISOString(),
   };
