@@ -135,9 +135,10 @@ We selected the **Carbon Footprint Awareness** challenge vertical, building an i
 
 ## 📝 Assumptions Made
 
-1. **Grid Factor Baseline**: Electricity calculation uses the US national grid average emission factor (0.417 kg CO₂/kWh). Renewable tariff calculations subtract directly from this baseline.
+1. **Grid Factor Baseline**: Electricity calculation uses the India national grid average emission factor (0.71 kg CO₂/kWh). Renewable tariff calculations subtract directly from this baseline.
 2. **Flight Impact Rating**: Aviation emissions assume a flat factor of 250 kg CO₂e per flight hour, accounting for radiative forcing at high altitudes.
 3. **Completed Actions**: Checking an action recommendation is assumed to represent a permanent lifestyle change, updating the baseline calculation accordingly. Dynamic logging represents temporary offsets.
+4. **Currency Scaling**: Consumption/shopping spend is calculated in Indian Rupees (₹) with a factor of 0.0084 kg CO₂/₹.
 
 ---
 

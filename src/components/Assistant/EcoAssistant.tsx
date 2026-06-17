@@ -28,7 +28,7 @@ export const EcoAssistant: React.FC = () => {
   const [input, setInput] = useState('');
   const [showSettings, setShowSettings] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [geminiKey, setGeminiKey] = useState(() => sessionStorage.getItem('ecoLens_gemini_key') || '');
+  const [geminiKey, setGeminiKey] = useState(() => sessionStorage.getItem('ecoLens_gemini_key') || import.meta.env.VITE_GEMINI_API_KEY || '');
   const [messages, setMessages] = useState<readonly Message[]>([
     { id: 'g', sender: 'assistant', text: GREETING, timestamp: new Date().toLocaleTimeString() },
   ]);
