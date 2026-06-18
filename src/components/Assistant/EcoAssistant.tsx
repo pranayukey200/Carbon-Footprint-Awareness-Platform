@@ -90,6 +90,11 @@ export const EcoAssistant: React.FC = () => {
               <span style={{ display: 'block', fontSize: '9px', color: 'var(--color-text-secondary)', marginTop: '2px' }}>*Stored only in this browser session (sessionStorage)</span>
             </div>
           )}
+          {!geminiKey.trim() && !showSettings && (
+            <div style={{ fontSize: '10px', textAlign: 'center', padding: 'var(--space-2)', color: 'var(--color-text-secondary)', background: 'rgba(242, 166, 35, 0.06)', borderBottom: '1px solid var(--color-border)' }} role="status">
+              💡 Local mode active. Click ⚙️ to add a Gemini API Key for live AI responses.
+            </div>
+          )}
           <div className="assistant-panel__chat">
             {messages.map((m) => (
               <div key={m.id} className={`chat-bubble chat-bubble--${m.sender}`}>

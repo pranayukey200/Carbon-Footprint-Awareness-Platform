@@ -10,6 +10,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { Button } from '../components/shared/Button';
 import { SkipLink } from '../components/shared/SkipLink';
+import { InteractiveBackground } from '../components/shared/InteractiveBackground';
 
 /**
  * Validates that a string is a valid ARIA role.
@@ -180,5 +181,33 @@ describe('Accessibility: DOM Components Rendering', () => {
     const iconContainer = btn.querySelector('.btn__icon');
     expect(iconContainer).not.toBeNull();
     expect(iconContainer?.getAttribute('aria-hidden')).toBe('true');
+  });
+
+  it('hides interactive background canvas from screen readers using aria-hidden', () => {
+    const originalGetContext = HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext = (function () {
+      return {
+        clearRect: () => {},
+        beginPath: () => {},
+        moveTo: () => {},
+        lineTo: () => {},
+        stroke: () => {},
+        save: () => {},
+        restore: () => {},
+        translate: () => {},
+        rotate: () => {},
+        ellipse: () => {},
+        arc: () => {},
+        fill: () => {},
+      } as unknown as CanvasRenderingContext2D;
+    } as unknown as typeof HTMLCanvasElement.prototype.getContext);
+    try {
+      const { container } = render(React.createElement(InteractiveBackground));
+      const canvas = container.querySelector('canvas');
+      expect(canvas).not.toBeNull();
+      expect(canvas?.getAttribute('aria-hidden')).toBe('true');
+    } finally {
+      HTMLCanvasElement.prototype.getContext = originalGetContext;
+    }
   });
 });
