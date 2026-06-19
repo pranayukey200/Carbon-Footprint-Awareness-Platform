@@ -34,7 +34,7 @@ const INITIAL_STATE: AppState = {
   recommendations: [],
   progressLog: [],
   isOnboarded: false,
-  currentStep: OnboardingStep.Personal,
+  currentStep: OnboardingStep.Transport,
   trendData: [],
 };
 

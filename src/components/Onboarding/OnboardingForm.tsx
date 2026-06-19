@@ -9,7 +9,6 @@ import React, { useCallback } from 'react';
 import { OnboardingStep } from '../../types';
 import { useCarbonStore } from '../../store/carbonStore';
 import { StepIndicator } from './StepIndicator';
-import { PersonalStep } from './PersonalStep';
 import { TransportStep } from './TransportStep';
 import { DietStep } from './DietStep';
 import { EnergyStep } from './EnergyStep';
@@ -18,7 +17,6 @@ import { ReviewSummary } from './ReviewSummary';
 
 /** Map of step index → component */
 const STEP_COMPONENTS: Readonly<Record<number, React.FC>> = {
-  [OnboardingStep.Personal]: PersonalStep,
   [OnboardingStep.Transport]: TransportStep,
   [OnboardingStep.Diet]: DietStep,
   [OnboardingStep.Energy]: EnergyStep,
@@ -37,7 +35,7 @@ export const OnboardingForm: React.FC = () => {
   const userProfile = useCarbonStore((s) => s.userProfile);
 
   const isReview = currentStep === OnboardingStep.Review;
-  const isFirstStep = currentStep === OnboardingStep.Personal;
+  const isFirstStep = currentStep === OnboardingStep.Transport;
 
   /** Navigate to the previous step */
   const handleBack = useCallback(() => {
@@ -85,14 +83,14 @@ export const OnboardingForm: React.FC = () => {
           role="progressbar"
           aria-valuenow={currentStep}
           aria-valuemin={0}
-          aria-valuemax={5}
-          aria-label={`Onboarding progress: ${Math.round((currentStep / 5) * 100)}%`}
+          aria-valuemax={4}
+          aria-label={`Onboarding progress: ${Math.round((currentStep / 4) * 100)}%`}
         >
           <div
             style={{
               height: '100%',
               background: 'linear-gradient(90deg, var(--color-accent-primary), var(--color-accent-tertiary))',
-              width: `${(currentStep / 5) * 100}%`,
+              width: `${(currentStep / 4) * 100}%`,
               transition: 'width 0.3s ease',
             }}
           />

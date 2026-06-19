@@ -55,10 +55,9 @@ export enum Difficulty {
 
 /** Steps in the onboarding form flow */
 export enum OnboardingStep {
-  Personal = 0,
-  Transport = 1,
-  Diet = 2,
-  Energy = 3,
-  Shopping = 4,
-  Review = 5,
+  Transport = 0,
+  Diet = 1,
+  Energy = 2,
+  Shopping = 3,
+  Review = 4,
 }

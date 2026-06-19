@@ -55,7 +55,7 @@ export const BillIngestCard: React.FC<BillIngestCardProps> = ({ setEnergyProfile
           hash = (hash << 5) - hash + hashStr.charCodeAt(i);
           hash |= 0;
         }
-        setTimeout(() => processResult(Math.abs((hash % 800) + 150), Math.abs(((hash * 7) % 60) + 10)), 1000);
+        processResult(Math.abs((hash % 800) + 150), Math.abs(((hash * 7) % 60) + 10));
       };
 
       const processFilenameOrHash = () => {
@@ -63,7 +63,7 @@ export const BillIngestCard: React.FC<BillIngestCardProps> = ({ setEnergyProfile
         const nameElec = nameValues.electricity;
         const nameGas = nameValues.gas;
         if (nameElec !== null && nameGas !== null && !isNaN(nameElec) && !isNaN(nameGas)) {
-          setTimeout(() => processResult(nameElec, nameGas), 1000);
+          processResult(nameElec, nameGas);
         } else {
           fallbackHash();
         }
@@ -78,7 +78,7 @@ export const BillIngestCard: React.FC<BillIngestCardProps> = ({ setEnergyProfile
           const cElec = contentValues.electricity;
           const cGas = contentValues.gas;
           if (cElec !== null && cGas !== null && !isNaN(cElec) && !isNaN(cGas)) {
-            setTimeout(() => processResult(cElec, cGas), 1000);
+            processResult(cElec, cGas);
           } else {
             processFilenameOrHash();
           }

@@ -8,6 +8,8 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { Card } from '../shared/Card';
 import { Button } from '../shared/Button';
+import { useCarbonStore } from '../../store/carbonStore';
+import { hashEmail, validateEmail } from '../../utils/sanitize';
 
 interface LandingProps {
   /** Callback to transition to the onboarding questionnaire */
@@ -30,6 +32,10 @@ const LEAVES = ['🌿', '🍃', '🍁', '🍂'];
  */
 export const Landing: React.FC<LandingProps> = ({ onStartOnboarding }) => {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const setUserProfile = useCarbonStore((s) => s.setUserProfile);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -50,6 +56,17 @@ export const Landing: React.FC<LandingProps> = ({ onStartOnboarding }) => {
       duration: `${Math.random() * 8 + 8}s`,
     }));
   }, [prefersReducedMotion]);
+
+  const handleStart = async () => {
+    if (email && !validateEmail(email)) {
+      setEmailError('Invalid email format. E.g., user@example.com');
+      return;
+    }
+    setEmailError('');
+    const emailHash = email ? await hashEmail(email) : '';
+    setUserProfile({ name, emailHash });
+    onStartOnboarding();
+  };
 
   return (
     <div className="landing-hero" aria-label="CarbonLens Landing Screen">
@@ -83,13 +100,22 @@ export const Landing: React.FC<LandingProps> = ({ onStartOnboarding }) => {
 
           <Card className="glass-cta-card" aria-label="Quick Action Card">
             <h2 className="glass-cta-card__title">Empower Your Climate Actions</h2>
-            <p className="glass-cta-card__desc">
-              Calculate your personalized carbon score in 3 minutes.
+            <p className="glass-cta-card__desc" style={{ marginBottom: 'var(--space-3)' }}>
+              Enter details below and calculate your carbon score in 3 minutes.
             </p>
+            <div className="input-group" style={{ marginBottom: 'var(--space-3)', textAlign: 'left' }}>
+              <label htmlFor="landing-name" className="input-group__label">First Name</label>
+              <input id="landing-name" type="text" className="input" placeholder="Your first name (e.g. Pranay)" value={name} onChange={(e) => setName(e.target.value)} aria-label="First name input" />
+            </div>
+            <div className="input-group" style={{ marginBottom: 'var(--space-4)', textAlign: 'left' }}>
+              <label htmlFor="landing-email" className="input-group__label">Email Address (PII Protection: Stored only as Hash)</label>
+              <input id="landing-email" type="email" className="input" placeholder="Your email address" value={email} onChange={(e) => { setEmail(e.target.value); setEmailError(''); }} aria-label="Email address input" aria-invalid={!!emailError} aria-describedby={emailError ? 'landing-email-error' : undefined} />
+              {emailError && <p id="landing-email-error" style={{ color: 'var(--color-error)', fontSize: 'var(--font-size-xs)', marginTop: '4px', margin: '4px 0 0 0' }} role="alert">{emailError}</p>}
+            </div>
             <Button
               variant="primary"
               size="lg"
-              onClick={onStartOnboarding}
+              onClick={handleStart}
               aria-label="Start carbon footprint calculation wizard"
             >
               Calculate mine →
