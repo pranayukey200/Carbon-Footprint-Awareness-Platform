@@ -1,4 +1,4 @@
-# 🌿 CarbonLens — Carbon Footprint Awareness Platform
+# 🌿 CarbonLens — Carbon Footprint Awareness Platform .
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev/)
